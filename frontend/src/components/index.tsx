@@ -9,7 +9,7 @@ export default function Test() {
         async function fetchData() {
             const data = await getPosts();
             setPosts(data);
-            console.log(data)
+            // console.log(data)
         }
         fetchData();
     }, []);
