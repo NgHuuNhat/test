@@ -2,28 +2,17 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Test from './components';
+import ProductList from './pages/ProductList';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
   return (
-    <div>
-      <Test />
-    </div>
-    // <div className="App">
-    //   <header className="App-header">
-    //     <img src={logo} className="App-logo" alt="logo" />
-    //     <p>
-    //       Edit <code>src/App.tsx</code> and save to reload.
-    //     </p>
-    //     <a
-    //       className="App-link"
-    //       href="https://reactjs.org"
-    //       target="_blank"
-    //       rel="noopener noreferrer"
-    //     >
-    //       Learn React
-    //     </a>
-    //   </header>
-    // </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Test />} />
+        <Route path="/admin" element={<ProductList />} />
+      </Routes>
+    </Router>
   );
 }
 

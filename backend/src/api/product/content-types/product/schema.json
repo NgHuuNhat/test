@@ -4,7 +4,8 @@
   "info": {
     "singularName": "product",
     "pluralName": "products",
-    "displayName": "product"
+    "displayName": "product",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -19,23 +20,15 @@
       "required": true
     },
     "image": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": true
-    },
-    "category": {
-      "type": "enumeration",
-      "enum": [
-        "iphone",
-        "ipad",
-        "macbook"
-      ],
-      "required": true
+      ]
     },
     "stock": {
       "type": "integer"
@@ -45,6 +38,12 @@
       "relation": "manyToMany",
       "target": "api::order.order",
       "mappedBy": "products"
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "inversedBy": "products"
     }
   }
 }
