@@ -1,24 +1,26 @@
 {
   "kind": "collectionType",
-  "collectionName": "products",
+  "collectionName": "userrs",
   "info": {
-    "singularName": "product",
-    "pluralName": "products",
-    "displayName": "product"
+    "singularName": "userr",
+    "pluralName": "userrs",
+    "displayName": "userr"
   },
   "options": {
     "draftAndPublish": true
   },
   "attributes": {
-    "name": {
+    "phone": {
       "type": "string",
-      "required": true
+      "required": true,
+      "unique": true
     },
-    "price": {
-      "type": "decimal",
-      "required": true
+    "password": {
+      "type": "password",
+      "required": true,
+      "minLength": 8
     },
-    "image": {
+    "avatar": {
       "allowedTypes": [
         "images",
         "files",
@@ -28,23 +30,20 @@
       "type": "media",
       "multiple": true
     },
-    "category": {
+    "role": {
       "type": "enumeration",
       "enum": [
-        "iphone",
-        "ipad",
-        "macbook"
+        "admin",
+        "user"
       ],
+      "default": "user",
       "required": true
-    },
-    "stock": {
-      "type": "integer"
     },
     "orders": {
       "type": "relation",
-      "relation": "manyToMany",
+      "relation": "oneToMany",
       "target": "api::order.order",
-      "mappedBy": "products"
+      "mappedBy": "userr"
     }
   }
 }
