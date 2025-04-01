@@ -1,8 +1,8 @@
 import axios from "axios";
 import { Product } from "../types/type";
 
-const API_URL = "http://localhost:1337";
-// const API_URL = "https://test-vbsz.onrender.com";
+// const API_URL = "http://localhost:1337";
+const API_URL = "https://test-vbsz.onrender.com";
 
 export const getProductImage = (image?: { url: string; formats?: { thumbnail?: { url: string } } }[]) => {
     if (!image || image.length === 0) {
