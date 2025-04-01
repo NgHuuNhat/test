@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:1337";
-// const API_URL = "https://test-vbsz.onrender.com/api";
+// const API_URL = "http://localhost:1337";
+const API_URL = "https://test-vbsz.onrender.com";
 
 export const getProductImage = (image?: { url: string; formats?: { thumbnail?: { url: string } } }[]) => {
     if (!image || image.length === 0) {
