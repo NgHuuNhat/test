@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "categories",
+  "collectionName": "payment_statuses",
   "info": {
-    "singularName": "category",
-    "pluralName": "categories",
-    "displayName": "category",
+    "singularName": "payment-status",
+    "pluralName": "payment-statuses",
+    "displayName": "payment_status",
     "description": ""
   },
   "options": {
@@ -19,11 +19,11 @@
     "description": {
       "type": "string"
     },
-    "products": {
+    "payment_status_histories": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::product.product",
-      "mappedBy": "category"
+      "target": "api::payment-status-history.payment-status-history",
+      "mappedBy": "payment_status"
     }
   }
 }

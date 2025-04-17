@@ -4,7 +4,8 @@
   "info": {
     "singularName": "order",
     "pluralName": "orders",
-    "displayName": "order"
+    "displayName": "order",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -22,18 +23,14 @@
       "target": "api::product.product",
       "inversedBy": "orders"
     },
-    "total": {
+    "total_price": {
       "type": "decimal"
     },
-    "status_order": {
-      "type": "enumeration",
-      "enum": [
-        "pending",
-        "shipped",
-        "completed",
-        "canceled"
-      ],
-      "required": false
+    "payment": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::payment.payment",
+      "mappedBy": "order"
     }
   }
 }

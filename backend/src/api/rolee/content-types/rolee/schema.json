@@ -1,11 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "categories",
+  "collectionName": "rolees",
   "info": {
-    "singularName": "category",
-    "pluralName": "categories",
-    "displayName": "category",
-    "description": ""
+    "singularName": "rolee",
+    "pluralName": "rolees",
+    "displayName": "rolee"
   },
   "options": {
     "draftAndPublish": true
@@ -19,11 +18,11 @@
     "description": {
       "type": "string"
     },
-    "products": {
+    "userrs": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::product.product",
-      "mappedBy": "category"
+      "target": "api::userr.userr",
+      "mappedBy": "rolee"
     }
   }
 }

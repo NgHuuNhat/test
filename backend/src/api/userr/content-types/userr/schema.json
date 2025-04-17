@@ -4,7 +4,8 @@
   "info": {
     "singularName": "userr",
     "pluralName": "userrs",
-    "displayName": "userr"
+    "displayName": "userr",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -21,28 +22,38 @@
       "minLength": 8
     },
     "avatar": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": true
-    },
-    "role": {
-      "type": "enumeration",
-      "enum": [
-        "admin",
-        "user"
-      ],
-      "default": "user",
-      "required": true
+      ]
     },
     "orders": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::order.order",
+      "mappedBy": "userr"
+    },
+    "rolee": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::rolee.rolee",
+      "inversedBy": "userrs"
+    },
+    "address": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "cart": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::cart.cart",
       "mappedBy": "userr"
     }
   }

@@ -1,16 +1,31 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Test from './components';
-import ProductList from './pages/ProductList';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Layout from './admin/components/Layout';
+import Admin from './admin/pages';
+import Home from './home/index';
+import Users from './admin/pages/users';
+import Products from './admin/pages/products';
+import Orders from './admin/pages/orders';
+import Payments from './admin/pages/payments';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Test />} />
-        <Route path="/admin" element={<ProductList />} />
+
+        {/* Route cho trang chủ */}
+        <Route path="/" element={<Home />} />
+
+        {/* Route cho trang quản trị */}
+        <Route path="/admin/*" element={<Layout />}>
+          <Route path="" element={<Admin />} />
+          <Route path="users" element={<Users />} />
+          <Route path="products" element={<Products />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="payments" element={<Payments />} />
+        </Route>
+
       </Routes>
     </Router>
   );
