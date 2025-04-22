@@ -91,8 +91,8 @@ const DataTable = ({
   };
 
   const handleSubmit = async (values: any) => {
-    console.log('submit-values', values)
-    console.log('fileList[0]', fileList[0])
+    // console.log('submit-values', values)
+    // console.log('fileList[0]', fileList[0])
     try {
       let imageId;
       const isNewImage = fileList[0]?.originFileObj;
@@ -104,7 +104,7 @@ const DataTable = ({
       }
 
       const payload = { ...values, image: imageId || null };
-      console.log('submit-payload', payload)
+      // console.log('submit-payload', payload)
       const isUser = editing?.username !== undefined;
       const idToUse = isUser ? editing?.id : editing?.documentId;
 

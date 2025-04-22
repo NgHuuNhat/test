@@ -16,6 +16,7 @@ export default function Users() {
   const columns = [
     { title: "ID", dataIndex: "id" },
     { title: "Phone", dataIndex: "phone", sorter: (a: any, b: any) => a.phone - b.phone },
+    { title: "Username", dataIndex: "username", sorter: (a: any, b: any) => a.name.localeCompare(b.name) },
     { title: "Name", dataIndex: "name", sorter: (a: any, b: any) => a.name.localeCompare(b.name) },
     { title: "Email", dataIndex: "email", sorter: (a: any, b: any) => a.name.localeCompare(b.name) },
     {
@@ -45,7 +46,7 @@ export default function Users() {
       <Form.Item name="username" label="Username" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
-      <Form.Item name="name" label="Name" rules={[{ required: true }]}>
+      <Form.Item name="name" label="Name">
         <Input />
       </Form.Item>
       <Form.Item name="email" label="Email" rules={[{ required: true }]}>
