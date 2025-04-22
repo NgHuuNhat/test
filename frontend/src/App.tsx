@@ -8,11 +8,15 @@ import Users from './admin/pages/users';
 import Products from './admin/pages/products';
 import Orders from './admin/pages/orders';
 import Payments from './admin/pages/payments';
+import Login from './auth/login';
 
 function App() {
   return (
     <Router>
       <Routes>
+
+        {/* Route cho login */}
+        <Route path="login" element={<Login />} />
 
         {/* Route cho trang chủ */}
         <Route path="/" element={<Home />} />

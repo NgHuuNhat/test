@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import { Table, Modal, Input, Button, Form, message } from "antd";
 import { Container } from "@mui/material";
-import axios from "axios";
+import { uploadImage } from "../../apis/apiUpload";
 
 interface Props {
   title: string;
@@ -11,8 +11,9 @@ interface Props {
   updateItem: (id: string, values: any) => Promise<any>;
   deleteItem: (id: string) => Promise<any>;
   columns: any[];
-  formFields: (form: any, fileList: any, setFileList: any, categories?: any[]) => ReactNode;
+  formFields: (form: any, fileList: any, setFileList: any, categories?: any[], roles?: any[]) => ReactNode;
   categories?: any[];
+  roles?: any[];
   apiUrl?: string;
 }
 
@@ -26,6 +27,7 @@ const DataTable = ({
   columns,
   formFields,
   categories = [],
+  roles = [],
   apiUrl = "",
 }: Props) => {
   const [form] = Form.useForm();
@@ -38,20 +40,6 @@ const DataTable = ({
   const [search, setSearch] = useState("");
   const [allData, setAllData] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-
-
-  const fetchTableData = async () => {
-    setLoading(true);
-    try {
-      const res = await fetchData({ page: pagination.page, pageSize: pagination.pageSize });
-      setData(res.data);
-      setPagination(prev => ({ ...prev, total: res.meta.pagination.total }));
-    } catch {
-      message.error("Lỗi khi tải dữ liệu");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     if (!search) {
@@ -74,6 +62,22 @@ const DataTable = ({
     return () => clearTimeout(delayDebounce);
   }, [search]);
 
+  const fetchTableData = async () => {
+    setLoading(true);
+    try {
+      const res = await fetchData({ page: pagination.page, pageSize: pagination.pageSize });
+      setData(res.data);
+      setPagination(prev => ({
+        ...prev,
+        total: res?.meta?.pagination?.total || 0,
+      }));
+    } catch (error) {
+      message.error("Lỗi khi tải dữ liệu");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const fetchAllDataForSearch = async () => {
     setLoading(true);
     try {
@@ -87,28 +91,31 @@ const DataTable = ({
   };
 
   const handleSubmit = async (values: any) => {
+    console.log('submit-values', values)
+    console.log('fileList[0]', fileList[0])
     try {
       let imageId;
-      if (fileList[0]?.originFileObj) {
-        const formData = new FormData();
-        formData.append("files", fileList[0].originFileObj);
-        const res = await axios.post(`${apiUrl}/api/upload`, formData);
-        imageId = res.data[0]?.id;
+      const isNewImage = fileList[0]?.originFileObj;
+      if (isNewImage) {
+        const uploaded = await uploadImage(isNewImage);
+        imageId = uploaded?.id;
       } else if (editing?.image?.[0]?.id) {
         imageId = editing.image[0].id;
       }
 
       const payload = { ...values, image: imageId || null };
+      console.log('submit-payload', payload)
+      const isUser = editing?.username !== undefined;
+      const idToUse = isUser ? editing?.id : editing?.documentId;
 
-      editing
-        ? await updateItem(editing.documentId, payload)
-        : await addItem(payload);
-
+      editing ? await updateItem(idToUse, payload) : await addItem(payload);
       message.success(`${editing ? "Cập nhật" : "Thêm"} thành công`);
+
       form.resetFields();
       setModalOpen(false);
       setEditing(null);
       setFileList([]);
+
       if (isSearching) {
         fetchAllDataForSearch();
       } else {
@@ -140,7 +147,8 @@ const DataTable = ({
         val?.toString().toLowerCase().includes(searchValue)
       );
       const matchCategory = item.category?.name?.toLowerCase().includes(searchValue);
-      return matchFlatFields || matchCategory;
+      const matchRole = item.role?.name?.toLowerCase().includes(searchValue);
+      return matchFlatFields || matchCategory || matchRole;
     })
     : data;
 
@@ -179,6 +187,7 @@ const DataTable = ({
                   form.setFieldsValue({
                     ...record,
                     category: record.category?.documentId,
+                    role: record.role?.id || null,
                   });
                   setFileList(record.imageUrl ? [{
                     uid: '-1',
@@ -188,7 +197,7 @@ const DataTable = ({
                   }] : []);
                   setModalOpen(true);
                 }}>Sửa</Button>
-                <Button danger onClick={() => handleDelete(record.documentId)} style={{ marginLeft: 8 }}>Xoá</Button>
+                <Button danger onClick={() => handleDelete(record?.phone !== undefined ? record.id : record.documentId)} style={{ marginLeft: 8 }}>Xoá</Button>
               </>
             )
           }
@@ -205,14 +214,14 @@ const DataTable = ({
         loading={loading}
         footer={() => (
           <div style={{ textAlign: 'left', fontWeight: 'bold' }}>
-            Tổng số lượng: {pagination.total}
+            Tổng số lượng: {isSearching ? filteredData.length : pagination.total}
           </div>
         )}
       />
 
       <Modal title={editing ? "Cập nhật" : "Thêm"} open={modalOpen} onOk={() => form.submit()} onCancel={() => setModalOpen(false)}>
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          {formFields(form, fileList, setFileList, categories)}
+          {formFields(form, fileList, setFileList, categories, roles)}
         </Form>
       </Modal>
     </Container>
@@ -220,3 +229,4 @@ const DataTable = ({
 };
 
 export default DataTable;
+

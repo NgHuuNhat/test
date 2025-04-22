@@ -1,10 +1,21 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Sidebar from './Sidebar'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 
 export default function Layout() {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const userStr = localStorage.getItem("user");
+        const user = userStr ? JSON.parse(userStr) : null;
+
+        if (!user || user.role !== "admin") {
+            navigate("/", { replace: true });
+        }
+    }, []);
+    
     return (
-        <div style={{ display: "flex", maxWidth:'1440px', margin: 'auto'}}>
+        <div style={{ display: "flex", maxWidth: '1440px', margin: 'auto' }}>
             <Sidebar />
             <div style={{ flex: 1, padding: "0" }}>
                 <Outlet />
