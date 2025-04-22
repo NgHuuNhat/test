@@ -67,7 +67,7 @@ const Login = () => {
         <Form form={form} autoComplete="off" layout="vertical" onFinish={onFinish}>
           <Form.Item
             name="identifier"
-            label="SĐT"
+            label="Username"
             rules={[{ required: true, message: "Vui lòng nhập email hoặc tên đăng nhập" }]}
           >
             <Input autoComplete="off" />
