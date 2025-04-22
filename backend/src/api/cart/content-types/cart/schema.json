@@ -10,12 +10,6 @@
     "draftAndPublish": true
   },
   "attributes": {
-    "userr": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::userr.userr",
-      "inversedBy": "cart"
-    },
     "products": {
       "type": "relation",
       "relation": "manyToMany",

@@ -391,7 +391,6 @@ export interface ApiCartCart extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    userr: Schema.Attribute.Relation<'oneToOne', 'api::userr.userr'>;
   };
 }
 
@@ -484,7 +483,6 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    userr: Schema.Attribute.Relation<'manyToOne', 'api::userr.userr'>;
   };
 }
 
@@ -632,77 +630,6 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
     price: Schema.Attribute.Decimal & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     stock: Schema.Attribute.Integer;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
-export interface ApiRoleeRolee extends Struct.CollectionTypeSchema {
-  collectionName: 'rolees';
-  info: {
-    displayName: 'rolee';
-    pluralName: 'rolees';
-    singularName: 'rolee';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    description: Schema.Attribute.String;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'api::rolee.rolee'> &
-      Schema.Attribute.Private;
-    name: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.Unique;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    userrs: Schema.Attribute.Relation<'oneToMany', 'api::userr.userr'>;
-  };
-}
-
-export interface ApiUserrUserr extends Struct.CollectionTypeSchema {
-  collectionName: 'userrs';
-  info: {
-    description: '';
-    displayName: 'userr';
-    pluralName: 'userrs';
-    singularName: 'userr';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    address: Schema.Attribute.String;
-    avatar: Schema.Attribute.Media<
-      'images' | 'files' | 'videos' | 'audios',
-      true
-    >;
-    cart: Schema.Attribute.Relation<'oneToOne', 'api::cart.cart'>;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    email: Schema.Attribute.Email;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'api::userr.userr'> &
-      Schema.Attribute.Private;
-    orders: Schema.Attribute.Relation<'oneToMany', 'api::order.order'>;
-    password: Schema.Attribute.Password &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        minLength: 8;
-      }>;
-    phone: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.Unique;
-    publishedAt: Schema.Attribute.DateTime;
-    rolee: Schema.Attribute.Relation<'manyToOne', 'api::rolee.rolee'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1164,7 +1091,6 @@ export interface PluginUsersPermissionsUser
   };
   options: {
     draftAndPublish: false;
-    timestamps: true;
   };
   attributes: {
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
@@ -1178,17 +1104,25 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    image: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'plugin::users-permissions.user'
     > &
       Schema.Attribute.Private;
+    name: Schema.Attribute.String;
     password: Schema.Attribute.Password &
       Schema.Attribute.Private &
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    phone: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
     provider: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     resetPasswordToken: Schema.Attribute.String & Schema.Attribute.Private;
@@ -1226,8 +1160,6 @@ declare module '@strapi/strapi' {
       'api::payment-status.payment-status': ApiPaymentStatusPaymentStatus;
       'api::payment.payment': ApiPaymentPayment;
       'api::product.product': ApiProductProduct;
-      'api::rolee.rolee': ApiRoleeRolee;
-      'api::userr.userr': ApiUserrUserr;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
