@@ -13,7 +13,7 @@ const Login = () => {
     const userStr = localStorage.getItem("user");
     if (userStr) {
       const user = JSON.parse(userStr);
-      if (user?.role === "Admin") {
+      if (user?.role === "admin") {
         navigate("/admin", { replace: true });
       } else {
         navigate("/", { replace: true });
@@ -32,11 +32,13 @@ const Login = () => {
 
       const jwt = res.jwt;
       const userId = res.user.id;
-      const userRes = await fetch(`http://localhost:1337/api/users/${userId}?populate=role`, {
+      const userRes = await fetch(`${API_URL}/api/users/${userId}?populate=role`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
       });
+
+      console.log("userRes", userRes)
 
       const userWithRole = await userRes.json();
       const roleName = userWithRole.role?.name || "unknown";
