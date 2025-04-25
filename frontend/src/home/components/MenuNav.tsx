@@ -1,0 +1,77 @@
+import React, { useEffect, useState } from 'react';
+import { useLocation, Link } from 'react-router-dom';
+import { HomeIcon, Search, Heart, ShoppingCart, User } from 'lucide-react';
+
+export default function MenuNav() {
+    const location = useLocation();
+    const currentPath = location.pathname;
+    const [user, setUser] = useState<any>()
+
+    // Lấy thông tin user từ localStorage
+    const userData = localStorage.getItem('user');
+    const newUserData = userData ? JSON.parse(userData) : null;
+    // Chỉ lấy user từ localStorage khi component mount
+    useEffect(() => {
+        const updateUser = () => {
+            const userData = localStorage.getItem('user');
+            const parsedUser = userData ? JSON.parse(userData) : null;
+            setUser(parsedUser);
+        };
+
+        updateUser(); // cập nhật lần đầu
+
+        window.addEventListener('userUpdated', updateUser);
+        return () => window.removeEventListener('userUpdated', updateUser);
+    }, []); // ← thêm [] để chỉ chạy 1 lần
+
+    // const isLoggedIn = !!user;
+    // const avatarUrl = user?.image || '';
+
+    // Các mục menu chính
+    const menu = [
+        { label: 'Home', path: '/', icon: <HomeIcon size={24} /> },
+        { label: 'Search', path: '/search', icon: <Search size={24} /> },
+        { label: 'Wishlist', path: '/wishlist', icon: <Heart size={24} /> },
+        { label: 'Cart', path: '/cart', icon: <ShoppingCart size={24} /> },
+    ];
+
+    return (
+        <nav className="sticky top-0 h-screen w-60 flex flex-col justify-between px-4 py-6 border-r border-gray-200 font-sans text-sm bg-white">
+            {/* Phần trên */}
+            <div className="flex flex-col gap-6">
+                <Link to='/' className="text-2xl font-semibold px-2 mb-6">Shopping</Link>
+                {menu.map((item) => (
+                    <Link
+                        key={item.path}
+                        to={item.path}
+                        className={`flex items-center gap-4 px-3 py-2 rounded-lg transition-colors duration-200 cursor-pointer
+                        ${currentPath === item.path ? 'bg-gray-100 text-black font-medium' : 'text-gray-700 hover:bg-gray-100'}`}
+                    >
+                        {item.icon}
+                        <span>{item.label}</span>
+                    </Link>
+                ))}
+            </div>
+
+            {/* Phần dưới cùng - Profile */}
+            <div>
+                <Link
+                    to="/profile"
+                    className={`flex items-center gap-4 px-3 py-2 rounded-lg transition-colors duration-200
+                    ${currentPath === '/profile' ? 'bg-gray-100 text-black font-medium' : 'text-gray-700 hover:bg-gray-100'}`}
+                >
+                    {user ? (
+                        <img
+                            src={user.image}
+                            alt="Avatar"
+                            className="w-6 h-6 rounded-full object-cover"
+                        />
+                    ) : (
+                        <User size={24} />
+                    )}
+                    <span>Profile</span>
+                </Link>
+            </div>
+        </nav>
+    );
+}

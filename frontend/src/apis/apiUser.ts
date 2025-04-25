@@ -24,6 +24,7 @@ const addUser = async (user: any) => {
 };
 
 const updateUser = async (id: string, user: any) => {
+  console.log(id, user)
   const res = await api.put(`/api/users/${id}`, user);
   return res.data;
 };
@@ -33,4 +34,20 @@ const deleteUser = async (id: string) => {
   return res.data;
 };
 
-export { getUsers, addUser, updateUser, deleteUser };
+const getUserById = async (id: any) => {
+  const res = await api.get(`/api/users/${id}?populate=*`);
+  const user = res.data;
+  const role = user.role?.name || "unknown";
+  const image = user.image?.[0]?.url
+    ? `${API_URL}${user.image[0].url}`
+    : null;
+  const newUser = {
+    ...user,
+    role,
+    image,
+  };
+  return newUser;
+};
+
+
+export { getUsers, addUser, updateUser, deleteUser, getUserById };

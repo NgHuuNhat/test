@@ -154,7 +154,7 @@ const DataTable = ({
 
   return (
     <Container>
-      <h3>{title}</h3>
+      <h3 className="my-5 font-bold">{title}</h3>
 
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
         <Button type="primary" onClick={() => { setEditing(null); form.resetFields(); setModalOpen(true); }}>+ Thêm</Button>
@@ -214,7 +214,7 @@ const DataTable = ({
         loading={loading}
         footer={() => (
           <div style={{ textAlign: 'left', fontWeight: 'bold' }}>
-            Tổng số lượng: {isSearching ? filteredData.length : pagination.total}
+            Tổng số lượng: {(isSearching || filteredData?.[0]?.email) ? filteredData.length : pagination.total}
           </div>
         )}
       />
@@ -229,4 +229,3 @@ const DataTable = ({
 };
 
 export default DataTable;
-

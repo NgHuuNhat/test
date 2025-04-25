@@ -3,6 +3,7 @@ import { Form, Input, Button, message, Card } from "antd";
 import { login } from "../apis/apiLogin";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../apis/api";
+import { getUserById } from "../apis/apiUser";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,30 +33,38 @@ const Login = () => {
 
       const jwt = res.jwt;
       const userId = res.user.id;
-      const userRes = await fetch(`${API_URL}/api/users/${userId}?populate=role`, {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
+      const userLogin = await getUserById(userId);
+      console.log("userLogin", userLogin)
+      // const userRes = await fetch(`${API_URL}/api/users/${userId}?populate=*`, {
+      //   headers: {
+      //     Authorization: `Bearer ${jwt}`,
+      //   },
+      // });
 
-      console.log("userRes", userRes)
+      // console.log("userRes", userRes)
 
-      const userWithRole = await userRes.json();
-      const roleName = userWithRole.role?.name || "unknown";
-      // Tạo user mới chỉ chứa role.name thay vì toàn bộ role object
-      const simplifiedUser = {
-        ...res.user,
-        role: roleName,
-      };
+      // const userWithRole = await userRes.json();
+      // const roleName = userWithRole.role?.name || "unknown";
+      // // Lấy image URL nếu có
+      // console.log("userWithRole", userWithRole)
+      // const imageUrl = userWithRole.image?.[0]?.url
+      //   ? `${API_URL}${userWithRole.image[0].url}`
+      //   : null;
+      // // Tạo user mới chỉ chứa role.name thay vì toàn bộ role object
+      // const simplifiedUser = {
+      //   ...res.user,
+      //   role: roleName,
+      //   imageUrl,
+      // };
       localStorage.setItem("token", jwt);
-      localStorage.setItem("user", JSON.stringify(simplifiedUser));
+      localStorage.setItem("user", JSON.stringify(userLogin));
       form.resetFields();
 
       // 🎯 Điều hướng theo phân quyền
-      if (roleName === "admin") {
+      if (userLogin.role === "admin") {
         navigate("/admin");
       } else {
-        navigate("/");
+        navigate("/profile");
       }
     } catch (err: any) {
       message.error(err.response?.data?.error?.message || "Đăng nhập thất bại");
@@ -83,6 +92,9 @@ const Login = () => {
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" block>Đăng nhập</Button>
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" block onClick={() => navigate("/profile")}>Trở về</Button>
           </Form.Item>
         </Form>
       </Card>
