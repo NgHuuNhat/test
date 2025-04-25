@@ -21,8 +21,18 @@ export default function MenuNav() {
         updateUser(); // cập nhật lần đầu
 
         window.addEventListener('userUpdated', updateUser);
-        return () => window.removeEventListener('userUpdated', updateUser);
-    }, []); // ← thêm [] để chỉ chạy 1 lần
+        window.addEventListener('userLogout', () => {
+            setUser(null); // Khi userLogout, xóa thông tin người dùng
+        });
+
+        return () => {
+            window.removeEventListener('userUpdated', updateUser);
+            window.removeEventListener('userLogout', () => {
+                setUser(null); // Dọn dẹp sự kiện khi component unmount
+            });
+        };
+
+    }, []); // Chạy 1 lần khi component mount
 
     // const isLoggedIn = !!user;
     // const avatarUrl = user?.image || '';
@@ -69,7 +79,7 @@ export default function MenuNav() {
                     ) : (
                         <User size={24} />
                     )}
-                    <span>Profile</span>
+                    <span> {user ? (user?.name) : ('Profile')}</span>
                 </Link>
             </div>
         </nav>

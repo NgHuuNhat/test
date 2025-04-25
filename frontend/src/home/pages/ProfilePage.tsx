@@ -87,6 +87,7 @@ export default function ProfilePage() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    window.dispatchEvent(new Event("userLogout"));
     message.success("Đăng xuất thành công!");
     navigate("/profile");
   };
