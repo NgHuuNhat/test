@@ -15,10 +15,10 @@ export default function Users() {
 
   const columns = [
     { title: "ID", dataIndex: "id" },
-    // { title: "Phone", dataIndex: "phone", sorter: (a: any, b: any) => a.phone - b.phone },
+    { title: "Phone", dataIndex: "phone", sorter: (a: any, b: any) => a.phone - b.phone },
     { title: "Username", dataIndex: "username", sorter: (a: any, b: any) => a.name.localeCompare(b.name) },
-    { title: "Name", dataIndex: "name", sorter: (a: any, b: any) => a.name.localeCompare(b.name) },
-    { title: "Email", dataIndex: "email", sorter: (a: any, b: any) => a.name.localeCompare(b.name) },
+    // { title: "Name", dataIndex: "name", sorter: (a: any, b: any) => a.name.localeCompare(b.name) },
+    // { title: "Email", dataIndex: "email", sorter: (a: any, b: any) => a.name.localeCompare(b.name) },
     {
       title: "Hình ảnh",
       render: (_: any, record: any) => (
@@ -35,6 +35,12 @@ export default function Users() {
       dataIndex: "createdAt",
       render: (text: string) => dayjs(text).format("DD-MM-YYYY HH:mm:ss"),
       sorter: (a: any, b: any) => dayjs(a.createdAt).unix() - dayjs(b.createdAt).unix(),  // Định dạng ngày giờ
+    },
+    {
+      title: "Ngày cập nhật",
+      dataIndex: "updatedAt",
+      render: (text: string) => dayjs(text).format("DD-MM-YYYY HH:mm:ss"),
+      sorter: (a: any, b: any) => dayjs(a.updatedAt).unix() - dayjs(b.updatedAt).unix(),  // Định dạng ngày giờ
     },
   ];
 
