@@ -1,38 +1,104 @@
-// import { Eye, Heart, ShoppingCart } from 'lucide-react';
-// import React from 'react';
+// import { Select, Input } from 'antd';
+// import React, { useEffect, useState, useCallback } from 'react';
+// import { getProducts } from '../../apis/apiProducts';
+// import ProductCard from '../components/ProductCard';
 
-// export default function ProductCart({ product, onAddToCart }: { product: any; onAddToCart: () => void }) {
-//     return (
-//         <div className="w-full aspect-square relative group overflow-hidden">
-//             <img
-//                 src={product.imageUrl}
-//                 alt={product.name}
-//                 className="w-full h-full object-cover"
-//             />
+// export default function Home() {
+//   const [products, setProducts] = useState<any[]>([]);
+//   const [searchQuery, setSearchQuery] = useState('');
+//   const [debouncedSearch, setDebouncedSearch] = useState('');
+//   const [sortOrder, setSortOrder] = useState<string>('asc');
+//   const [categoryFilter, setCategoryFilter] = useState<string>('all');
+//   const categories = ['all', 'electronics', 'fashion', 'home', 'beauty'];
 
-//             {/* Overlay nút khi hover */}
-//             <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-2 text-white">
-//                 <div className="text-sm font-semibold">{product.name}</div>
-//                 <div className="flex justify-between items-center">
-//                     <span className="font-bold">${product.price}</span>
-//                     <div className="flex gap-1">
-//                         <button className="p-1 bg-white/20 rounded hover:bg-white/40 cursor-pointer transition-transform hover:scale-110">
+//   // Debounce search
+//   // const debounceSearch = useCallback(
+//   //   debounce((value: string) => {
+//   //     setDebouncedSearch(value);
+//   //   }, 500),
+//   //   []
+//   // );
 
-//                             <Heart size={16} />
-//                         </button>
-//                         <button className="p-1 bg-white/20 rounded hover:bg-white/40 cursor-pointer transition-transform hover:scale-110">
+//   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     setSearchQuery(e.target.value);
+//     // debounceSearch(e.target.value);
+//   };
 
-//                             <Eye size={16} />
-//                         </button>
-//                         <button onClick={onAddToCart} className="p-1 bg-white/20 rounded hover:bg-white/40 cursor-pointer transition-transform hover:scale-110">
-//                             <ShoppingCart size={16} />
-//                         </button>
-//                     </div>
-//                 </div>
-//             </div>
+//   useEffect(() => {
+//     const fetchProducts = async () => {
+//       const filters = {
+//         sort: sortOrder,
+//         category: categoryFilter !== 'all' ? categoryFilter : undefined,
+//         search: debouncedSearch,
+//       };
+//       const productData = await getProducts(filters);
+//       setProducts(productData.data);
+//     };
+//     fetchProducts();
+//   }, [sortOrder, categoryFilter, debouncedSearch]);
+
+//   const handleSortChange = (value: string) => {
+//     setSortOrder(value);
+//   };
+
+//   const handleCategoryChange = (value: string) => {
+//     setCategoryFilter(value);
+//   };
+
+//   const addToWish = (product: any) => {
+//     console.log("them vao yeu thich", product);
+//   };
+
+//   const addToCart = (product: any) => {
+//     console.log("them vao gio hang", product);
+//   };
+
+//   const viewDetail = (product: any) => {
+//     console.log("xem chi tiet", product);
+//   };
+
+//   return (
+//     <div className='m-2 my-7'>
+//       <div className="search-bar flex justify-between my-5">
+//         <Input
+//           placeholder="Tìm sản phẩm"
+//           value={searchQuery}
+//           onChange={handleSearchChange}
+//           style={{ width: '60%' }}
+//         />
+//         <div className="filters flex gap-4">
+//           <Select defaultValue="mn" onChange={handleSortChange} style={{ width: 150 }}>
+//             <Select.Option value="mn">Mới nhất</Select.Option>
+//             <Select.Option value="cn">Cũ nhất</Select.Option>
+//             <Select.Option value="asc">Giá tăng dần</Select.Option>
+//             <Select.Option value="desc">Giá giảm dần</Select.Option>
+//           </Select>
+
+//           <Select defaultValue="all" onChange={handleCategoryChange} style={{ width: 150 }}>
+//             {categories.map((category) => (
+//               <Select.Option key={category} value={category}>
+//                 {category.charAt(0).toUpperCase() + category.slice(1)}
+//               </Select.Option>
+//             ))}
+//           </Select>
 //         </div>
-//     );
+//       </div>
+
+//       <div className="grid grid-cols-3 gap-[2px]">
+//         {products.map((product: any) => (
+//           <ProductCard
+//             key={product.documentId}
+//             product={product}
+//             onAddToWish={() => addToWish(product)}
+//             onAddToCart={() => addToCart(product)}
+//             onViewDetail={() => viewDetail(product)}
+//           />
+//         ))}
+//       </div>
+//     </div>
+//   );
 // }
+
 
 
 import React from 'react'

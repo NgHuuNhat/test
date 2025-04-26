@@ -54,6 +54,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.4",
     "@types/lodash": "^4.17.16",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.1",
     "@types/react-router-dom": "^5.3.3",
