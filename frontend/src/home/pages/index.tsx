@@ -1,36 +1,42 @@
-import { Button, message, Select, Input, Pagination } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Select, Input } from 'antd';
+import React, { useEffect, useState, useCallback } from 'react';
 import { getProducts } from '../../apis/apiProducts';
-import ProductCart from '../components/ProductCart';
+import ProductCard from '../components/ProductCard';
+// import debounce from 'lodash/debounce';
 
 export default function Home() {
   const [products, setProducts] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [sortOrder, setSortOrder] = useState<string>('asc');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalProducts, setTotalProducts] = useState(0);
-  const categories = ['all', 'electronics', 'fashion', 'home', 'beauty']; // Giả sử đây là các danh mục sản phẩm
+  const categories = ['all', 'electronics', 'fashion', 'home', 'beauty'];
+
+  // Debounce search
+  // const debounceSearch = useCallback(
+  //   debounce((value: string) => {
+  //     setDebouncedSearch(value);
+  //   }, 500),
+  //   []
+  // );
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    // debounceSearch(e.target.value);
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
       const filters = {
-        page: currentPage,
-        pageSize: 10,
         sort: sortOrder,
         category: categoryFilter !== 'all' ? categoryFilter : undefined,
-        search: searchQuery,
+        search: debouncedSearch,
       };
       const productData = await getProducts(filters);
       setProducts(productData.data);
-      setTotalProducts(productData.total); // Giả sử API trả về tổng số sản phẩm
     };
     fetchProducts();
-  }, [currentPage, sortOrder, categoryFilter, searchQuery]);
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
+  }, [sortOrder, categoryFilter, debouncedSearch]);
 
   const handleSortChange = (value: string) => {
     setSortOrder(value);
@@ -40,17 +46,20 @@ export default function Home() {
     setCategoryFilter(value);
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+  const addToWish = (product: any) => {
+    console.log("them vao yeu thich", product);
   };
 
   const addToCart = (product: any) => {
-    // Logic thêm sản phẩm vào giỏ hàng
+    console.log("them vao gio hang", product);
+  };
+
+  const viewDetail = (product: any) => {
+    console.log("xem chi tiet", product);
   };
 
   return (
-    <div>
-      {/* Tìm kiếm sản phẩm */}
+    <div className='m-2 my-7'>
       <div className="search-bar flex justify-between my-5">
         <Input
           placeholder="Tìm sản phẩm"
@@ -59,20 +68,14 @@ export default function Home() {
           style={{ width: '60%' }}
         />
         <div className="filters flex gap-4">
-          <Select
-            defaultValue="asc"
-            onChange={handleSortChange}
-            style={{ width: 150 }}
-          >
-            <Select.Option value="asc">Giá: Tăng dần</Select.Option>
-            <Select.Option value="desc">Giá: Giảm dần</Select.Option>
+          <Select defaultValue="mn" onChange={handleSortChange} style={{ width: 150 }}>
+            <Select.Option value="mn">Mới nhất</Select.Option>
+            <Select.Option value="cn">Cũ nhất</Select.Option>
+            <Select.Option value="asc">Giá tăng dần</Select.Option>
+            <Select.Option value="desc">Giá giảm dần</Select.Option>
           </Select>
 
-          <Select
-            defaultValue="all"
-            onChange={handleCategoryChange}
-            style={{ width: 150 }}
-          >
+          <Select defaultValue="all" onChange={handleCategoryChange} style={{ width: 150 }}>
             {categories.map((category) => (
               <Select.Option key={category} value={category}>
                 {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -82,32 +85,17 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Danh sách sản phẩm */}
-      <div className="grid grid-cols-3 gap-[10px]">
+      <div className="grid grid-cols-3 gap-[2px]">
         {products.map((product: any) => (
-          <ProductCart
+          <ProductCard
             key={product.documentId}
             product={product}
+            onAddToWish={() => addToWish(product)}
             onAddToCart={() => addToCart(product)}
-            onViewDetail={() => console.log("Xem chi tiết:", product)}
+            onViewDetail={() => viewDetail(product)}
           />
         ))}
       </div>
-
-
-      <div className="flex justify-center my-5">
-        <Pagination
-          current={currentPage}
-          total={totalProducts}
-          pageSize={10}
-          onChange={handlePageChange}
-          showSizeChanger={false}
-          style={{
-            fontWeight: 'bold',
-          }}
-        />
-      </div>
-
     </div>
   );
 }

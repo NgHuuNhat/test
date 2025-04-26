@@ -22,6 +22,7 @@ function App() {
 
         {/* Route cho login */}
         <Route path="/login" element={<Login />} />
+        {/* <Route path="/profile" element={<ProfilePage />} /> */}
 
         {/* Route cho trang chủ */}
         <Route path="/*" element={<HomeLayout />} >
@@ -39,6 +40,7 @@ function App() {
           <Route path="products" element={<Products />} />
           <Route path="orders" element={<Orders />} />
           <Route path="payments" element={<Payments />} />
+          <Route path="profile" element={<ProfilePage />} />
         </Route>
 
       </Routes>

@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { HomeIcon, Search, Heart, ShoppingCart, User } from 'lucide-react';
+import { HomeIcon, Search, Heart, ShoppingCart, User, Shield } from 'lucide-react';
 
 export default function MenuNav() {
     const location = useLocation();
     const currentPath = location.pathname;
-    const [user, setUser] = useState<any>()
+    const [user, setUser] = useState<any>();
 
-    // Lấy thông tin user từ localStorage
-    const userData = localStorage.getItem('user');
-    const newUserData = userData ? JSON.parse(userData) : null;
-    // Chỉ lấy user từ localStorage khi component mount
+    // Cập nhật user từ localStorage khi component mount
     useEffect(() => {
         const updateUser = () => {
             const userData = localStorage.getItem('user');
@@ -18,32 +15,29 @@ export default function MenuNav() {
             setUser(parsedUser);
         };
 
-        updateUser(); // cập nhật lần đầu
+        updateUser();
 
         window.addEventListener('userUpdated', updateUser);
-        window.addEventListener('userLogout', () => {
-            setUser(null); // Khi userLogout, xóa thông tin người dùng
-        });
+        window.addEventListener('userLogout', () => setUser(null));
 
         return () => {
             window.removeEventListener('userUpdated', updateUser);
-            window.removeEventListener('userLogout', () => {
-                setUser(null); // Dọn dẹp sự kiện khi component unmount
-            });
+            window.removeEventListener('userLogout', () => setUser(null));
         };
+    }, []);
 
-    }, []); // Chạy 1 lần khi component mount
-
-    // const isLoggedIn = !!user;
-    // const avatarUrl = user?.image || '';
-
-    // Các mục menu chính
-    const menu = [
+    // Menu chính
+    const baseMenu = [
         { label: 'Home', path: '/', icon: <HomeIcon size={24} /> },
         { label: 'Search', path: '/search', icon: <Search size={24} /> },
         { label: 'Wishlist', path: '/wishlist', icon: <Heart size={24} /> },
         { label: 'Cart', path: '/cart', icon: <ShoppingCart size={24} /> },
     ];
+
+    // Nếu là admin thì thêm mục Admin
+    const menu = user?.role === 'admin'
+        ? [...baseMenu, { label: 'Dashboard', path: '/admin', icon: <Shield size={24} /> }]
+        : baseMenu;
 
     return (
         <nav className="sticky top-0 h-screen w-60 flex flex-col justify-between px-4 py-6 border-r border-gray-200 font-sans text-sm bg-white">
@@ -70,7 +64,7 @@ export default function MenuNav() {
                     className={`flex items-center gap-4 px-3 py-2 rounded-lg transition-colors duration-200
                     ${currentPath === '/profile' ? 'bg-gray-100 text-black font-medium' : 'text-gray-700 hover:bg-gray-100'}`}
                 >
-                    {user ? (
+                    {user?.image ? (
                         <img
                             src={user.image}
                             alt="Avatar"
@@ -79,7 +73,7 @@ export default function MenuNav() {
                     ) : (
                         <User size={24} />
                     )}
-                    <span> {user ? (user?.name) : ('Profile')}</span>
+                    <span>{user?.name || 'Profile'}</span>
                 </Link>
             </div>
         </nav>

@@ -93,7 +93,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="my-2 flex items-center justify-center">
       {!user ? (
 
         <div className="flex justify-center items-center h-[calc(100vh-64px)]">

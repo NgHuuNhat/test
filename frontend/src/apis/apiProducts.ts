@@ -1,6 +1,18 @@
 import api, { API_URL } from "./api";
 
-const getProducts = async ({ page, pageSize }: { page: number; pageSize: number }) => {
+const getProducts = async ({
+  page,
+  pageSize,
+  sort,
+  category,
+  search,
+}: {
+  page?: number;
+  pageSize?: number;
+  sort?: string;
+  category?: string;
+  search?: string;
+}) => {
   const res = await api.get(`/api/products`, {
     params: {
       populate: "*",
