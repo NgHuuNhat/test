@@ -14,37 +14,40 @@ import CartPage from './home/pages/CartPage';
 import HomeLayout from './home/components/HomeLayout';
 import WishlistPage from './home/pages/WishlistPage';
 import SearchPage from './home/pages/SearchPage';
+import { CartProvider } from './home/contexts/CartContext';
 
 function App() {
   return (
-    <Router>
-      <Routes>
+    <CartProvider>
+      <Router>
+        <Routes>
 
-        {/* Route cho login */}
-        <Route path="/login" element={<Login />} />
-        {/* <Route path="/profile" element={<ProfilePage />} /> */}
+          {/* Route cho login */}
+          <Route path="/login" element={<Login />} />
+          {/* <Route path="/profile" element={<ProfilePage />} /> */}
 
-        {/* Route cho trang chủ */}
-        <Route path="/*" element={<HomeLayout />} >
-          <Route path="" element={<Home />} />
-          <Route path="search" element={<SearchPage />} />
-          <Route path="wishlist" element={<WishlistPage />} />
-          <Route path="cart" element={<CartPage />} />
-          <Route path="profile" element={<ProfilePage />} />
-        </Route>
+          {/* Route cho trang chủ */}
+          <Route path="/*" element={<HomeLayout />} >
+            <Route path="" element={<Home />} />
+            <Route path="search" element={<SearchPage />} />
+            <Route path="wishlist" element={<WishlistPage />} />
+            <Route path="cart" element={<CartPage />} />
+            <Route path="profile" element={<ProfilePage />} />
+          </Route>
 
-        {/* Route cho trang quản trị */}
-        <Route path="/admin/*" element={<Layout />}>
-          <Route path="" element={<Admin />} />
-          <Route path="users" element={<Users />} />
-          <Route path="products" element={<Products />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="payments" element={<Payments />} />
-          <Route path="profile" element={<ProfilePage />} />
-        </Route>
+          {/* Route cho trang quản trị */}
+          <Route path="/admin/*" element={<Layout />}>
+            <Route path="" element={<Admin />} />
+            <Route path="users" element={<Users />} />
+            <Route path="products" element={<Products />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="payments" element={<Payments />} />
+            <Route path="profile" element={<ProfilePage />} />
+          </Route>
 
-      </Routes>
-    </Router >
+        </Routes>
+      </Router >
+    </CartProvider>
   );
 }
 

@@ -33,12 +33,6 @@
     "stock": {
       "type": "integer"
     },
-    "orders": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::order.order",
-      "mappedBy": "products"
-    },
     "category": {
       "type": "relation",
       "relation": "manyToOne",
@@ -52,7 +46,7 @@
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::cart.cart",
-      "mappedBy": "products"
+      "mappedBy": "productId"
     }
   }
 }

@@ -20,6 +20,9 @@ const getUsers = async ({ page, pageSize }: { page: number; pageSize: number }) 
 
 const addUser = async (user: any) => {
   const res = await api.post(`/api/users`, user);
+  if (res.data) {
+    await api.post(`${API_URL}/api/carts`, { data: { userId: res.data.id } });
+  }
   return res.data;
 };
 

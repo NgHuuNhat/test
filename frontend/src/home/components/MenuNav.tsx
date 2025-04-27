@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { HomeIcon, Search, Heart, ShoppingCart, User, Shield } from 'lucide-react';
+import { useCart } from '../contexts/CartContext';
 
 export default function MenuNav() {
     const location = useLocation();
     const currentPath = location.pathname;
     const [user, setUser] = useState<any>();
+    const { getTotalQuantity } = useCart();
 
     // Cập nhật user từ localStorage khi component mount
     useEffect(() => {
@@ -51,7 +53,15 @@ export default function MenuNav() {
                         className={`flex items-center gap-4 px-3 py-2 rounded-lg transition-colors duration-200 cursor-pointer
                         ${currentPath === item.path ? 'bg-gray-100 text-black font-medium' : 'text-gray-700 hover:bg-gray-100'}`}
                     >
-                        {item.icon}
+                        <div className="relative">
+                            {item.icon}
+                            {/* Nếu là Cart thì hiện badge */}
+                            {item.label === 'Cart' && getTotalQuantity() >= 0 && (
+                                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                    {getTotalQuantity()}
+                                </span>
+                            )}
+                        </div>
                         <span>{item.label}</span>
                     </Link>
                 ))}

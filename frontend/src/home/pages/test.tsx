@@ -1,103 +1,70 @@
-// import { Select, Input } from 'antd';
-// import React, { useEffect, useState, useCallback } from 'react';
-// import { getProducts } from '../../apis/apiProducts';
-// import ProductCard from '../components/ProductCard';
+// import { Heart, ShoppingCart } from 'lucide-react';
+// import React from 'react'
+// import { useCart } from '../contexts/CartContext';
 
-// export default function Home() {
-//   const [products, setProducts] = useState<any[]>([]);
-//   const [searchQuery, setSearchQuery] = useState('');
-//   const [debouncedSearch, setDebouncedSearch] = useState('');
-//   const [sortOrder, setSortOrder] = useState<string>('asc');
-//   const [categoryFilter, setCategoryFilter] = useState<string>('all');
-//   const categories = ['all', 'electronics', 'fashion', 'home', 'beauty'];
+// export default function ProductCard({
+//   product,
+//   // onAddToWish,
+//   // onAddToCart,
+//   // onViewDetail,
+// }: {
+//   product: any;
+//   // onAddToWish: () => void;
+//   // onAddToCart: () => void;
+//   // onViewDetail: () => void;
+// }) {
 
-//   // Debounce search
-//   // const debounceSearch = useCallback(
-//   //   debounce((value: string) => {
-//   //     setDebouncedSearch(value);
-//   //   }, 500),
-//   //   []
-//   // );
+//   const { addToCart } = useCart();
 
-//   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     setSearchQuery(e.target.value);
-//     // debounceSearch(e.target.value);
+//   const handleAddToCart = () => {
+//     console.log("add cart", product)
+//     addToCart(product);
 //   };
 
-//   useEffect(() => {
-//     const fetchProducts = async () => {
-//       const filters = {
-//         sort: sortOrder,
-//         category: categoryFilter !== 'all' ? categoryFilter : undefined,
-//         search: debouncedSearch,
-//       };
-//       const productData = await getProducts(filters);
-//       setProducts(productData.data);
-//     };
-//     fetchProducts();
-//   }, [sortOrder, categoryFilter, debouncedSearch]);
-
-//   const handleSortChange = (value: string) => {
-//     setSortOrder(value);
+//   const handleViewDetail = () => {
+//     console.log("view detail", product)
 //   };
 
-//   const handleCategoryChange = (value: string) => {
-//     setCategoryFilter(value);
-//   };
-
-//   const addToWish = (product: any) => {
-//     console.log("them vao yeu thich", product);
-//   };
-
-//   const addToCart = (product: any) => {
-//     console.log("them vao gio hang", product);
-//   };
-
-//   const viewDetail = (product: any) => {
-//     console.log("xem chi tiet", product);
+//   const handleAddToWish = () => {
+//     console.log("add wish", product)
 //   };
 
 //   return (
-//     <div className='m-2 my-7'>
-//       <div className="search-bar flex justify-between my-5">
-//         <Input
-//           placeholder="Tìm sản phẩm"
-//           value={searchQuery}
-//           onChange={handleSearchChange}
-//           style={{ width: '60%' }}
-//         />
-//         <div className="filters flex gap-4">
-//           <Select defaultValue="mn" onChange={handleSortChange} style={{ width: 150 }}>
-//             <Select.Option value="mn">Mới nhất</Select.Option>
-//             <Select.Option value="cn">Cũ nhất</Select.Option>
-//             <Select.Option value="asc">Giá tăng dần</Select.Option>
-//             <Select.Option value="desc">Giá giảm dần</Select.Option>
-//           </Select>
+//     <div className="w-full aspect-square relative overflow-hidden group">
+//       {/* Click vào hình để xem chi tiết */}
+//       <img
+//         src={product.imageUrl}
+//         alt={product.name}
+//         onClick={handleViewDetail}
+//         className="w-full h-full object-cover cursor-pointer transition-transform duration-300 group-hover:scale-105"
+//       />
 
-//           <Select defaultValue="all" onChange={handleCategoryChange} style={{ width: 150 }}>
-//             {categories.map((category) => (
-//               <Select.Option key={category} value={category}>
-//                 {category.charAt(0).toUpperCase() + category.slice(1)}
-//               </Select.Option>
-//             ))}
-//           </Select>
+//       {/* <div className='absolute top-0 right-0 px-2 py-2 bg-gradient-to-t to-transparent text-white text-sm flex justify-between items-center'>
+//         <button onClick={onAddToWish} className="p-2 rounded-full cursor-pointer transition-transform hover:scale-110">
+//           <Heart size={24} />
+//         </button>
+//       </div> */}
+
+//       {/* Thông tin luôn hiển thị ở góc dưới */}
+//       <div className="absolute bottom-0 left-0 right-0 px-2 py-2 bg-gradient-to-t from-black/70 to-transparent text-white text-sm flex justify-between items-center">
+
+//         <span className="font-semibold text-l">${product.price}</span>
+//         <span className="font-semibold text-l ms-10">{product.name}</span>
+
+//         <div className="flex gap-1">
+//           <button onClick={handleAddToWish} className="p-2 text-white/100 rounded-full hover:text-white/50 cursor-pointer transition-transform hover:scale-105">
+//             <Heart size={26} />
+//           </button>
+//           <button onClick={handleAddToCart} className="p-2 text-white/100 rounded-full hover:text-white/50 cursor-pointer transition-transform hover:scale-105">
+//             <ShoppingCart size={26} />
+//           </button>
 //         </div>
-//       </div>
 
-//       <div className="grid grid-cols-3 gap-[2px]">
-//         {products.map((product: any) => (
-//           <ProductCard
-//             key={product.documentId}
-//             product={product}
-//             onAddToWish={() => addToWish(product)}
-//             onAddToCart={() => addToCart(product)}
-//             onViewDetail={() => viewDetail(product)}
-//           />
-//         ))}
 //       </div>
 //     </div>
-//   );
+//   )
 // }
+
 
 
 

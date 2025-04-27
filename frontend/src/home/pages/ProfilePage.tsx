@@ -29,28 +29,18 @@ export default function ProfilePage() {
       let imageId;
       const isNewImage = fileList[0]?.originFileObj;
 
-      // if (isNewImage) {
-      //   const uploaded = await uploadImage(isNewImage);
-      //   imageId = uploaded?.id;
-      // } else if (profile?.image?.[0]?.id) {
-      //   imageId = profile.image[0].id;
-      // }
-
       const updatedData: any = {
         name: formData.name,
         username: formData.username,
         email: formData.email,
         phone: formData.phone,
-        // image: imageId ? [imageId] : [], // Gửi dưới dạng mảng ID nếu Strapi yêu cầu
       };
 
-      // Nếu có ảnh mới hoặc đã có ảnh cũ → thêm vào `updatedData`
       if (isNewImage) {
         const uploaded = await uploadImage(isNewImage);
         const imageId = uploaded?.id;
         if (imageId) {
-          updatedData.image = [imageId]; // Chỉ gửi khi có ảnh mới
-          // window.dispatchEvent(new Event('userUpdated'));
+          updatedData.image = [imageId];
         }
       }
 
@@ -68,7 +58,6 @@ export default function ProfilePage() {
       setFormData(updatedUser); // Cập nhật lại formData
       setFileList([]);          // Reset fileList
       localStorage.setItem("user", JSON.stringify(updatedUser));
-      // ⬅️ Bây giờ mới dispatch để đảm bảo `localStorage` đã được cập nhật
       window.dispatchEvent(new Event("userUpdated"));
       message.success("Thông tin đã được cập nhật!");
 
@@ -116,7 +105,6 @@ export default function ProfilePage() {
                     ? URL.createObjectURL(fileList[0].originFileObj)
                     : profile?.image || "no image"
                 }
-              // className="border-4 border-gray-200"
               />
               {isEditing && (
                 <Upload
@@ -186,11 +174,8 @@ export default function ProfilePage() {
                 ) : (
                   <>
                     <Card
-                      // title={<Title level={4}>Thông tin người dùng</Title>}
-                      // bordered={false}
                       style={{
                         maxWidth: 800, margin: 'auto', border: 'none'
-                        // boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                       }}
                     >
                       <Row gutter={[16, 16]}>
@@ -238,13 +223,6 @@ export default function ProfilePage() {
                           <Text>{dayjs(profile?.updatedAt).format("DD/MM/YYYY HH:mm")}</Text>
                         </Col>
                       </Row>
-
-                      {/* <Divider /> */}
-                      {/* <div style={{ textAlign: 'center', marginTop: 16 }}>
-                        <Text type="secondary" italic>
-                          Được hiển thị bằng Ant Design ✨
-                        </Text>
-                      </div> */}
                     </Card>
                   </>
                 )}

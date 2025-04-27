@@ -74,17 +74,17 @@ export default function Home() {
   //   }, 1000); // delay 150ms để mượt hơn
   // };
 
-  const addToWish = (product: any) => {
-    console.log("Thêm vào yêu thích", product);
-  };
+  // const addToWish = (product: any) => {
+  //   console.log("Thêm vào yêu thích", product);
+  // };
 
-  const addToCart = (product: any) => {
-    console.log("Thêm vào giỏ hàng", product);
-  };
+  // const addToCart = (product: any) => {
+  //   console.log("Thêm vào giỏ hàng", product);
+  // };
 
-  const viewDetail = (product: any) => {
-    console.log("Xem chi tiết", product);
-  };
+  // const viewDetail = (product: any) => {
+  //   console.log("Xem chi tiết", product);
+  // };
 
   return (
     <div className='m-2 my-7'>
@@ -137,9 +137,9 @@ export default function Home() {
           <ProductCard
             key={product.documentId}
             product={product}
-            onAddToWish={() => addToWish(product)}
-            onAddToCart={() => addToCart(product)}
-            onViewDetail={() => viewDetail(product)}
+            // onAddToWish={() => addToWish(product)}
+            // onAddToCart={() => addToCart(product)}
+            // onViewDetail={() => viewDetail(product)}
           />
         ))}
       </div>

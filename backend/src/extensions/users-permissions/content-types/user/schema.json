@@ -83,6 +83,12 @@
     },
     "name": {
       "type": "string"
+    },
+    "cart": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::cart.cart",
+      "mappedBy": "userId"
     }
   }
 }

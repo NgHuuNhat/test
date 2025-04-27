@@ -1,13 +1,16 @@
 import React, { useEffect } from "react";
 import { Form, Input, Button, message, Card } from "antd";
 import { login } from "../apis/apiLogin";
-import { useNavigate } from "react-router-dom";
-import { API_URL } from "../apis/api";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getUserById } from "../apis/apiUser";
 
 const Login = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  const location = useLocation();
+
+  const searchParams = new URLSearchParams(location.search);
+  const redirectPath = searchParams.get("redirect"); // lấy đường dẫn trước đó
 
   // ❌ Nếu đã đăng nhập → redirect ra ngoài
   useEffect(() => {
@@ -34,28 +37,8 @@ const Login = () => {
       const jwt = res.jwt;
       const userId = res.user.id;
       const userLogin = await getUserById(userId);
-      console.log("userLogin", userLogin)
-      // const userRes = await fetch(`${API_URL}/api/users/${userId}?populate=*`, {
-      //   headers: {
-      //     Authorization: `Bearer ${jwt}`,
-      //   },
-      // });
 
-      // console.log("userRes", userRes)
-
-      // const userWithRole = await userRes.json();
-      // const roleName = userWithRole.role?.name || "unknown";
-      // // Lấy image URL nếu có
-      // console.log("userWithRole", userWithRole)
-      // const imageUrl = userWithRole.image?.[0]?.url
-      //   ? `${API_URL}${userWithRole.image[0].url}`
-      //   : null;
-      // // Tạo user mới chỉ chứa role.name thay vì toàn bộ role object
-      // const simplifiedUser = {
-      //   ...res.user,
-      //   role: roleName,
-      //   imageUrl,
-      // };
+      // Lưu thông tin người dùng vào localStorage
       localStorage.setItem("token", jwt);
       localStorage.setItem("user", JSON.stringify(userLogin));
       form.resetFields();
@@ -64,13 +47,18 @@ const Login = () => {
       if (userLogin.role === "admin") {
         navigate("/admin");
       } else {
-        navigate("/profile");
+        // Nếu có `redirect` trong query string, điều hướng về trang đó
+        if (redirectPath) {
+          navigate(redirectPath);
+        } else {
+          // Nếu không có `redirect`, quay về trang mặc định (ví dụ: trang chủ)
+          navigate("/profile");
+        }
       }
     } catch (err: any) {
       message.error(err.response?.data?.error?.message || "Đăng nhập thất bại");
     }
   };
-
 
   return (
     <div style={{ display: "flex", height: "100vh", justifyContent: "center", alignItems: "center" }}>
@@ -94,7 +82,7 @@ const Login = () => {
             <Button type="primary" htmlType="submit" block>Đăng nhập</Button>
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" block onClick={() => navigate("/profile")}>Trở về</Button>
+            <Button type="primary" block onClick={() => navigate(-1)}>Trở về</Button>
           </Form.Item>
         </Form>
       </Card>
