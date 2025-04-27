@@ -104,6 +104,10 @@ const CartPage = () => {
             <span>{user?.cart.id}</span>
           </div>
           <div className="flex justify-between text-sm text-gray-500">
+            <span>Tên giỏ hàng:</span>
+            <span>Giỏ hàng của {user?.name}</span>
+          </div>
+          <div className="flex justify-between text-sm text-gray-500">
             <span>Mã khách hàng:</span>
             <span>{user?.id}</span>
           </div>
