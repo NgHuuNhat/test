@@ -8,6 +8,7 @@ export default function MenuNav() {
     const currentPath = location.pathname;
     const [user, setUser] = useState<any>();
     const { getTotalQuantity } = useCart();
+    const [isShaking, setIsShaking] = useState(false);
 
     // Cập nhật user từ localStorage khi component mount
     useEffect(() => {
@@ -27,6 +28,26 @@ export default function MenuNav() {
             window.removeEventListener('userLogout', () => setUser(null));
         };
     }, []);
+
+    useEffect(() => {
+        // const newQuantity = getTotalQuantity();
+        // if (getTotalQuantity) {
+        // //   setTotalQuantity(newQuantity); // Cập nhật số lượng
+        //   setIsShaking(true); // Bắt đầu rung
+
+        //   // Dừng rung sau 0.5s (thời gian animation)
+        //   setTimeout(() => {
+        //     setIsShaking(false);
+        //   }, 500);
+        // }
+        //
+        setIsShaking(true); // Bắt đầu rung
+
+        // Dừng rung sau 0.5s (thời gian animation)
+        setTimeout(() => {
+            setIsShaking(false);
+        }, 500);
+    }, [getTotalQuantity]); // Kiểm tra thay đổi của getTotalQuantity
 
     // Menu chính
     const baseMenu = [
@@ -51,9 +72,11 @@ export default function MenuNav() {
                         key={item.path}
                         to={item.path}
                         className={`flex items-center gap-4 px-3 py-2 rounded-lg transition-colors duration-200 cursor-pointer
-                        ${currentPath === item.path ? 'bg-gray-100 text-black font-medium' : 'text-gray-700 hover:bg-gray-100'}`}
+                        ${currentPath === item.path ? 'bg-gray-100 text-black font-medium' : 'text-gray-700 hover:bg-gray-100'}
+                        ${item.label === 'Cart' && isShaking ? 'shake' : ''}
+                        `}
                     >
-                        <div className="relative">
+                        <div className='relative'>
                             {item.icon}
                             {/* Nếu là Cart thì hiện badge */}
                             {item.label === 'Cart' && user && getTotalQuantity() >= 0 && (
