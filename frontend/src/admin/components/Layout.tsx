@@ -13,11 +13,15 @@ export default function Layout() {
             navigate("/", { replace: true });
         }
     }, []);
-    
+
     return (
-        <div style={{ display: "flex", maxWidth: '1440px', margin: 'auto' }}>
+        <div
+            className='lg:flex max-w-[1440px] mx-auto md:block'
+        >
             <Sidebar />
-            <div style={{ flex: 1, padding: "0" }}>
+            <div
+                className='lg:flex-1 md:flex-0'
+            >
                 <Outlet />
             </div>
         </div>

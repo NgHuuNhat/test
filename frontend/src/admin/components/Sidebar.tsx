@@ -1,117 +1,79 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import {
-    HomeOutlined,
-    ShoppingOutlined,
-    FileTextOutlined,
-    CreditCardOutlined,
-    UserOutlined,
-    LogoutOutlined,
-} from '@ant-design/icons';
-import { Shield, User } from 'lucide-react';
-import { Modal, message } from 'antd';
+import { Link, useLocation } from 'react-router-dom';
+import { CreditCard, FileTextIcon, HomeIcon, Shield, ShoppingBag, User } from 'lucide-react';
 
 export default function Sidebar() {
     const location = useLocation();
-    const navigate = useNavigate();
     const currentPath = location.pathname;
     const [user, setUser] = useState<any>();
 
-     useEffect(() => {
-            const updateUser = () => {
-                const userData = localStorage.getItem('user');
-                const parsedUser = userData ? JSON.parse(userData) : null;
-                setUser(parsedUser);
-            };
-    
-            updateUser();
-    
-            window.addEventListener('userUpdated', updateUser);
-            window.addEventListener('userLogout', () => setUser(null));
-    
-            return () => {
-                window.removeEventListener('userUpdated', updateUser);
-                window.removeEventListener('userLogout', () => setUser(null));
-            };
-        }, []);
+    useEffect(() => {
+        const updateUser = () => {
+            const userData = localStorage.getItem('user');
+            const parsedUser = userData ? JSON.parse(userData) : null;
+            setUser(parsedUser);
+        };
 
-    // const handleLogout = () => {
-    //     Modal.confirm({
-    //         title: 'Xác nhận đăng xuất',
-    //         content: 'Bạn có chắc chắn muốn đăng xuất?',
-    //         onOk() {
-    //             localStorage.removeItem('token');
-    //             localStorage.removeItem('user');
-    //             message.success('Đăng xuất thành công!');
-    //             navigate('/');
-    //         },
-    //     });
-    // };
+        updateUser();
 
-    const menuItems = [
-        { key: '/admin', label: 'Admin', icon: <HomeOutlined /> },
-        { key: '/admin/products', label: 'Quản lý sản phẩm', icon: <ShoppingOutlined /> },
-        { key: '/admin/orders', label: 'Quản lý đơn hàng', icon: <FileTextOutlined /> },
-        { key: '/admin/payments', label: 'Quản lý thanh toán', icon: <CreditCardOutlined /> },
-        { key: '/admin/users', label: 'Quản lý tài khoản', icon: <UserOutlined /> },
-        { key: '/', label: 'Shopping', icon: <Shield size={16} /> },
+        window.addEventListener('userUpdated', updateUser);
+        window.addEventListener('userLogout', () => setUser(null));
+
+        return () => {
+            window.removeEventListener('userUpdated', updateUser);
+            window.removeEventListener('userLogout', () => setUser(null));
+        };
+    }, []);
+
+    const menu = [
+        { label: 'Admin', path: '/admin', icon: <HomeIcon size={24} /> },
+        { label: 'Quản lý sản phẩm', path: '/admin/products', icon: <ShoppingBag size={24} /> },
+        { label: 'Quản lý đơn hàng', path: '/admin/orders', icon: <FileTextIcon size={24} /> },
+        { label: 'Quản lý thanh toán', path: '/admin/payments', icon: <CreditCard size={24} /> },
+        { label: 'Quản lý tài khoản', path: '/admin/users', icon: <User size={24} /> },
+        ...(user?.role === 'admin'
+            ? [{ label: 'Shopping', path: '/', icon: <Shield size={24} /> }]
+            : []),
+        {
+            label: 'Profile',
+            path: '/admin/profile',
+            icon: user?.image ? (
+                <img
+                    src={user.image}
+                    alt="Avatar"
+                    className="w-6 h-6 rounded-full object-cover"
+                />
+            ) : (
+                <User size={24} />
+            ),
+        },
     ];
 
     return (
-        <nav className="sticky top-0 h-screen w-60 flex flex-col justify-between px-4 py-6 border-r border-gray-200 font-sans text-sm bg-white">
-            {/* Menu */}
-            <div className="flex flex-col gap-2">
-                {/* Logo */}
-                <div className="mb-6 px-2 text-2xl font-semibold">
-                    <Link to="/admin">Dashboard</Link>
-                </div>
-                {menuItems.map((item) => (
+        <nav className="lg:sticky lg:top-0 lg:h-screen lg:flex lg:flex-col lg:justify-between lg:px-4 lg:py-6 lg:w-60 lg:border-r lg:border-t-0
+            fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
+            <div className="flex gap-1 lg:gap-6 justify-around py-2 lg:flex-col lg:py-0 whitespace-nowrap">
+                <Link to="/" className="hidden lg:block text-2xl font-semibold px-2 my-2 mb-4">
+                    Shopping
+                </Link>
+
+                {menu.map((item) => (
                     <Link
-                        key={item.key}
-                        to={item.key}
-                        className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200
-                        ${location.pathname === item.key
-                                ? 'bg-gray-100 text-black font-medium'
-                                : 'text-gray-700 hover:bg-gray-100'
-                            }`}
+                        key={item.path}
+                        to={item.path}
+                        className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 cursor-pointer
+        ${currentPath === item.path ? 'bg-gray-100 text-black font-medium' : 'text-gray-700 hover:bg-gray-100'}
+        `}
                     >
-                        {item.icon}
-                        <span>{item.label}</span>
+                        <div className="relative">
+                            {item.icon}
+                        </div>
+                        <span className="hidden lg:block">
+                            {item.label === 'Profile' ? (user?.name || 'Profile') : item.label}
+                        </span>
                     </Link>
                 ))}
             </div>
-
-            {/* Phần dưới cùng - Profile */}
-            <div>
-                <Link
-                    to="/admin/profile"
-                    className={`flex items-center gap-4 px-3 py-2 rounded-lg transition-colors duration-200
-                                ${currentPath === '/profile' ? 'bg-gray-100 text-black font-medium' : 'text-gray-700 hover:bg-gray-100'}`}
-                >
-                    {user?.image ? (
-                        <img
-                            src={user.image}
-                            alt="Avatar"
-                            className="w-6 h-6 rounded-full object-cover"
-                        />
-                    ) : (
-                        <User size={24} />
-                    )}
-                    <span>{user?.name || 'Profile'}</span>
-                </Link>
-            </div>
-
-            {/* Đăng xuất */}
-            {/* <div className="mt-6">
-                <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-red-500 hover:bg-red-50 transition-colors duration-200"
-                >
-                    <LogoutOutlined />
-                    <span>Đăng xuất</span>
-                </button>
-            </div> */}
-
         </nav>
     );
 }

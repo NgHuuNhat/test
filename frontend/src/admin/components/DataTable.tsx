@@ -1,6 +1,5 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import { Table, Modal, Input, Button, Form, message } from "antd";
-import { Container } from "@mui/material";
+import { Table, Modal, Input, Button, Form, message, Pagination } from "antd";
 import { uploadImage } from "../../apis/apiUpload";
 
 interface Props {
@@ -91,8 +90,6 @@ const DataTable = ({
   };
 
   const handleSubmit = async (values: any) => {
-    // console.log('submit-values', values)
-    // console.log('fileList[0]', fileList[0])
     try {
       let imageId;
       const isNewImage = fileList[0]?.originFileObj;
@@ -104,7 +101,6 @@ const DataTable = ({
       }
 
       const payload = { ...values, image: imageId || null };
-      // console.log('submit-payload', payload)
       const isUser = editing?.username !== undefined;
       const idToUse = isUser ? editing?.id : editing?.documentId;
 
@@ -153,78 +149,124 @@ const DataTable = ({
     : data;
 
   return (
-    <Container>
-      <h3 className="my-5 font-bold">{title}</h3>
+    <div className="pb-20 lg:pb-0 container mx-auto px-2">
+      <h3 className="my-5 font-bold text-lg">{title}</h3>
 
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
-        <Button type="primary" onClick={() => { setEditing(null); form.resetFields(); setModalOpen(true); }}>+ Thêm</Button>
+      <div className="flex justify-between mb-4">
+        <Button
+          type="primary"
+          onClick={() => { setEditing(null); form.resetFields(); setModalOpen(true); }}
+          className="bg-blue-500 text-white"
+        >
+          + Thêm
+        </Button>
         <Input.Search
           placeholder="Tìm kiếm..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           allowClear
           enterButton
-          style={{ maxWidth: 400 }}
+          className="w-full sm:w-64"
         />
       </div>
 
-      <Table
-        rowKey="documentId"
-        columns={[
-          {
-            title: "STT",
-            key: "stt",
-            render: (_: any, __: any, index: number) =>
-              (pagination.page - 1) * pagination.pageSize + index + 1
-          },
-          ...columns,
-          {
-            title: "Hành động",
-            render: (_: any, record: any) => (
-              <>
-                <Button onClick={() => {
-                  setEditing(record);
-                  form.setFieldsValue({
-                    ...record,
-                    category: record.category?.documentId,
-                    role: record.role?.id || null,
-                  });
-                  setFileList(record.imageUrl ? [{
-                    uid: '-1',
-                    name: 'ảnh cũ',
-                    status: 'done',
-                    url: record.imageUrl,
-                  }] : []);
-                  setModalOpen(true);
-                }}>Sửa</Button>
-                <Button danger onClick={() => handleDelete(record?.phone !== undefined ? record.id : record.documentId)} style={{ marginLeft: 8 }}>Xoá</Button>
-              </>
-            )
-          }
-        ]}
-        dataSource={filteredData}
-        pagination={{
-          current: pagination.page,
-          pageSize: pagination.pageSize,
-          total: isSearching ? filteredData.length : pagination.total,
-          onChange: (page, pageSize) => setPagination({ ...pagination, page, pageSize }),
-          showSizeChanger: true,
-          pageSizeOptions: ['5', '10', '20', '50', '100'],
-        }}
-        loading={loading}
-        footer={() => (
-          <div style={{ textAlign: 'left', fontWeight: 'bold' }}>
-            Tổng số lượng: {(isSearching || filteredData?.[0]?.email) ? filteredData.length : pagination.total}
-          </div>
-        )}
-      />
+      <div className="overflow-x-auto">
 
-      <Modal title={editing ? "Cập nhật" : "Thêm"} open={modalOpen} onOk={() => form.submit()} onCancel={() => setModalOpen(false)}>
+        <Table
+          rowKey="documentId"
+          columns={[
+            {
+              title: "STT",
+              key: "stt",
+              render: (_: any, __: any, index: number) =>
+                (pagination.page - 1) * pagination.pageSize + index + 1,
+            },
+            ...columns,
+            {
+              title: "Hành động",
+              render: (_: any, record: any) => (
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => {
+                      setEditing(record);
+                      form.setFieldsValue({
+                        ...record,
+                        category: record.category?.documentId,
+                        role: record.role?.id || null,
+                      });
+                      setFileList(record.imageUrl ? [{
+                        uid: '-1',
+                        name: 'ảnh cũ',
+                        status: 'done',
+                        url: record.imageUrl,
+                      }] : []);
+                      setModalOpen(true);
+                    }}
+                    className="bg-yellow-500 text-white"
+                  >
+                    Sửa
+                  </Button>
+                  <Button
+                    danger
+                    onClick={() => handleDelete(record?.phone !== undefined ? record.id : record.documentId)}
+                  >
+                    Xoá
+                  </Button>
+                </div>
+              ),
+            },
+          ]}
+          dataSource={filteredData}
+          pagination={{
+            current: pagination.page,
+            pageSize: pagination.pageSize,
+            total: isSearching ? filteredData.length : pagination.total,
+            onChange: (page, pageSize) => setPagination({ ...pagination, page, pageSize }),
+            showSizeChanger: true,
+            pageSizeOptions: ['5', '10', '20', '50', '100'],
+            className: "w-full", // Đảm bảo pagination có chiều rộng đầy đủ
+          }}
+          loading={loading}
+          footer={() => (
+            <div className="text-left font-bold w-full">
+              Tổng số lượng: {isSearching || filteredData?.[0]?.email ? filteredData.length : pagination.total}
+            </div>
+          )}
+          className="w-full" // Đảm bảo table có chiều rộng đầy đủ
+        />
+
+        {/* Container bao bọc pagination và footer */}
+        {/* <div className="w-full overflow-hidden">
+          <Pagination
+            current={pagination.page}
+            pageSize={pagination.pageSize}
+            total={isSearching ? filteredData.length : pagination.total}
+            onChange={(page, pageSize) => setPagination({ ...pagination, page, pageSize })}
+            showSizeChanger={true}
+            pageSizeOptions={['5', '10', '20', '50', '100']}
+            className="w-full"
+          />
+          <div className="w-full text-left font-bold">
+            Tổng số lượng: {isSearching || filteredData?.[0]?.email ? filteredData.length : pagination.total}
+          </div>
+        </div> */}
+
+
+      </div>
+
+      <Modal
+        title={editing ? "Cập nhật" : "Thêm"}
+        open={modalOpen}
+        onOk={() => form.submit()}
+        onCancel={() => setModalOpen(false)}
+        className="w-full sm:w-96"
+        style={{ top: 0 }}
+      >
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
           {formFields(form, fileList, setFileList, categories, roles)}
         </Form>
       </Modal>
-    </Container>
+    </div>
   );
 };
 
