@@ -16,6 +16,7 @@ export default function ProductCard({
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState<any>();
+  const [isShaking, setIsShaking] = useState(false);
 
   useEffect(() => {
     // Lấy thông tin user từ localStorage khi lần đầu render
@@ -32,6 +33,12 @@ export default function ProductCard({
         },
       });
     } else {
+      setIsShaking(true); // Bắt đầu rung
+      message.success('Đã thêm sản phẩm vào giỏ hàng!')
+      setTimeout(() => {
+        setIsShaking(false); // Dừng rung sau khi animation kết thúc
+        // handleAddToCart(); // Xử lý thêm vào giỏ hàng
+      }, 500); // Thời gian rung (0.5s)
       console.log("add to cart", product);
       addToCart(product);
     }
@@ -63,7 +70,9 @@ export default function ProductCard({
       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent text-white text-sm items-center">
         <div className="w-full flex justify-between items-center pb-4 px-4">
           <span className="font-semibold text-l">{product.name}</span>
-          <button onClick={handleAddToCart} className="w-full max-w-[40%] flex justify-center items-center bg-white/10 py-2 rounded-full text-white transition-transform duration-200 hover:scale-105 hover:text-white/50 cursor-pointer">
+          <button onClick={handleAddToCart}
+            className={`w-full max-w-[40%] flex justify-center items-center bg-white/10 py-2 rounded-full text-white transition-transform duration-200 hover:scale-105 hover:text-white/50 cursor-pointer ${isShaking ? 'shake' : ''}`}
+          >
             <ShoppingCart className='w-full' size={26} />
           </button>
           <span className="font-semibold text-l">${product.price}</span>

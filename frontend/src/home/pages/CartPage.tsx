@@ -108,7 +108,13 @@ const CartPage = () => {
 
         {cartItems.length === 0 ? (
           <div className="flex justify-center items-center h-full">
-            <p className="text-lg text-gray-500">Giỏ hàng trống</p>
+            <p className="text-sm text-gray-500">Giỏ hàng trống</p>
+            <button
+              onClick={() => navigate(`/?redirect=${location.pathname}`)}
+              className="mx-2 text-sm text-blue-500 underline hover:text-blue-700 cursor-pointer"
+            >
+              Mua hàng
+            </button>
           </div>
         ) : (
           <div className="flex flex-col space-y-6">
@@ -236,6 +242,16 @@ const CartPage = () => {
             <span className="font-bold">Thành tiền:</span>
             <span className="font-bold">${getTotalPrice().toLocaleString()}</span>
           </div>
+
+          <span className="flex justify-center text-sm text-gray-500">
+            <button
+              onClick={() => navigate(`/?redirect=${location.pathname}`)}
+              className="text-blue-500 underline hover:text-blue-700 cursor-pointer"
+            >
+              Tiếp tục mua hàng
+            </button>
+          </span>
+
         </div>
 
         {/* Payment Button */}
