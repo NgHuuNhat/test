@@ -1,8 +1,10 @@
 import { Heart, ShoppingCart } from 'lucide-react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCart } from '../contexts/CartContext';
 import axios from 'axios';
 import { API_URL } from '../../apis/api';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { message, Modal } from 'antd';
 
 export default function ProductCard({
   product,
@@ -11,10 +13,28 @@ export default function ProductCard({
 }) {
 
   const { addToCart } = useCart();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [user, setUser] = useState<any>();
+
+  useEffect(() => {
+    // Lấy thông tin user từ localStorage khi lần đầu render
+    const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+    setUser(storedUser);
+  }, []); // Chạy 1 lần khi component mount
 
   const handleAddToCart = async () => {
-    console.log("add to cart", product);
-    addToCart(product);
+    if (!user) {
+      Modal.confirm({
+        title: "Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!",
+        onOk: async () => {
+          navigate(`/login?redirect=${location.pathname}`);
+        },
+      });
+    } else {
+      console.log("add to cart", product);
+      addToCart(product);
+    }
   };
 
   const handleViewDetail = () => {

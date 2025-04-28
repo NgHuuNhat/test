@@ -56,7 +56,7 @@ export default function MenuNav() {
                         <div className="relative">
                             {item.icon}
                             {/* Nếu là Cart thì hiện badge */}
-                            {item.label === 'Cart' && getTotalQuantity() >= 0 && (
+                            {item.label === 'Cart' && user && getTotalQuantity() >= 0 && (
                                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                                     {getTotalQuantity()}
                                 </span>

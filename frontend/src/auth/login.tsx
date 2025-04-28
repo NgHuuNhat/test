@@ -11,6 +11,7 @@ const Login = () => {
 
   const searchParams = new URLSearchParams(location.search);
   const redirectPath = searchParams.get("redirect"); // lấy đường dẫn trước đó
+  console.log("đường dẫn trước đó", redirectPath)
 
   // ❌ Nếu đã đăng nhập → redirect ra ngoài
   useEffect(() => {

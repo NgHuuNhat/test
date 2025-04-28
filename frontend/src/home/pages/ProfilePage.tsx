@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { getUserById, updateUser } from '../../apis/apiUser';
 import { Button, message, Input, Card, Avatar, Upload, Descriptions, Typography, Row, Col, Divider } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { uploadImage } from '../../apis/apiUpload';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [profile, setProfile] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<any>({});
@@ -15,6 +16,10 @@ export default function ProfilePage() {
   const userStr = localStorage.getItem("user");
   const user = userStr ? JSON.parse(userStr) : null;
   const { Title, Text } = Typography;
+
+  const searchParams = new URLSearchParams(location.search);
+  const redirectPath = searchParams.get("redirect"); // lấy đường dẫn trước đó
+  console.log("đường dẫn trước đó", redirectPath)
 
   useEffect(() => {
     if (userStr) {
@@ -34,6 +39,7 @@ export default function ProfilePage() {
         username: formData.username,
         email: formData.email,
         phone: formData.phone,
+        address: formData.address,
       };
 
       if (isNewImage) {
@@ -60,7 +66,9 @@ export default function ProfilePage() {
       localStorage.setItem("user", JSON.stringify(updatedUser));
       window.dispatchEvent(new Event("userUpdated"));
       message.success("Thông tin đã được cập nhật!");
-
+      if (redirectPath) {
+        navigate(redirectPath);
+      }
     } catch (err) {
       console.error(err);
       message.error("Cập nhật thất bại");
@@ -86,7 +94,7 @@ export default function ProfilePage() {
       {!user ? (
 
         <div className="flex justify-center items-center h-[calc(100vh-64px)]">
-          <Button type="primary" onClick={() => navigate("/login")}>Đăng nhập</Button>
+          <Button type="primary" onClick={() => navigate(`/login?redirect=${location.pathname}`)}>Đăng nhập</Button>
         </div>
 
 
@@ -126,6 +134,13 @@ export default function ProfilePage() {
               <div className="space-y-4">
                 {isEditing ? (
                   <>
+                    <div>
+                      <label>Địa chỉ nhận hàng</label>
+                      <Input
+                        value={formData.address}
+                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                      />
+                    </div>
                     <div>
                       <label>Tên</label>
                       <Input
@@ -178,6 +193,14 @@ export default function ProfilePage() {
                         maxWidth: 800, margin: 'auto', border: 'none'
                       }}
                     >
+                      <Row gutter={[16, 16]} className='mb-4'>
+                        <Col xs={24} sm={24} md={24}>
+                          <Text strong>Địa chỉ nhận hàng:</Text>
+                          <br />
+                          <Text>{profile?.address}</Text>
+                        </Col>
+                      </Row>
+
                       <Row gutter={[16, 16]}>
                         <Col xs={24} sm={12}>
                           <Text strong>Tên:</Text>
@@ -189,7 +212,6 @@ export default function ProfilePage() {
                           <br />
                           <Text>{profile?.username}</Text>
                         </Col>
-
                         <Col xs={24} sm={12}>
                           <Text strong>Email:</Text>
                           <br />
@@ -200,7 +222,6 @@ export default function ProfilePage() {
                           <br />
                           <Text>{profile?.phone}</Text>
                         </Col>
-
                         <Col xs={24} sm={12}>
                           <Text strong>ID:</Text>
                           <br />
@@ -211,6 +232,8 @@ export default function ProfilePage() {
                           <br />
                           <Text>{profile?.role}</Text>
                         </Col>
+
+
 
                         <Col xs={24} sm={12}>
                           <Text strong>Ngày tạo:</Text>
