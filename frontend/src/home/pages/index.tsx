@@ -16,7 +16,6 @@ export default function Home() {
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [categories, setCategories] = useState<any[]>([]);
   const [isFocused, setIsFocused] = useState(false);
-  // const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,59 +67,30 @@ export default function Home() {
     setSearchQuery(e.target.value);
   };
 
-  // const handleBlur = () => {
-  //   setTimeout(() => {
-  //     setIsFocused(false);
-  //   }, 1000); // delay 150ms để mượt hơn
-  // };
-
-  // const addToWish = (product: any) => {
-  //   console.log("Thêm vào yêu thích", product);
-  // };
-
-  // const addToCart = (product: any) => {
-  //   console.log("Thêm vào giỏ hàng", product);
-  // };
-
-  // const viewDetail = (product: any) => {
-  //   console.log("Xem chi tiết", product);
-  // };
-
   return (
-    <div className='m-2 my-7'>
-      <div className="search-bar flex justify-between my-5 flex-col md:flex-row gap-3">
+    <div className='mb-15 lg:m-1'>
+      <div className="mx-2 lg:mx-0 search-bar flex justify-between my-5 flex-col lg:flex-row gap-1">
         <Input
+          className='w-full'
           placeholder="Tìm theo tên hoặc giá..."
           value={searchQuery}
           onChange={handleSearchChange}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          // onBlur={handleBlur}
-          style={{
-            width: '100%'
-            // maxWidth: '100%',
-            // width: isFocused ? '100%' : '50%',
-            // transition: 'width 0.3s ease'
-          }}
+
         />
 
         <div
-          // className={`filters flex gap-4 overflow-hidden transition-all duration-300 ease-in-out`}
-          className='flex gap-1'
-        // style={{
-        //   maxHeight: searchQuery ? 0 : 100,
-        //   opacity: searchQuery ? 0 : 1,
-        //   transition: 'all 0.3s ease-in-out',
-        // }}
+          className='w-full flex gap-1'
         >
-          <Select value={sortOrder} onChange={setSortOrder} style={{ width: 150 }}>
+          <Select value={sortOrder} onChange={setSortOrder} style={{ width: '50%' }}>
             <Select.Option value="mn">Mới nhất</Select.Option>
             <Select.Option value="cn">Cũ nhất</Select.Option>
             <Select.Option value="asc">Giá tăng dần</Select.Option>
             <Select.Option value="desc">Giá giảm dần</Select.Option>
           </Select>
 
-          <Select value={categoryFilter} onChange={setCategoryFilter} style={{ width: 150 }}>
+          <Select value={categoryFilter} onChange={setCategoryFilter} style={{ width: "50%" }}>
             <Select.Option value="all">Tất cả</Select.Option>
             {categories.map((category: any) => (
               <Select.Option key={category.id} value={category.name}>
@@ -137,9 +107,6 @@ export default function Home() {
           <ProductCard
             key={product.documentId}
             product={product}
-            // onAddToWish={() => addToWish(product)}
-            // onAddToCart={() => addToCart(product)}
-            // onViewDetail={() => viewDetail(product)}
           />
         ))}
       </div>

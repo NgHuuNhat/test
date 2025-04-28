@@ -9,6 +9,11 @@ export default function MenuNav() {
     const [user, setUser] = useState<any>();
     const { getTotalQuantity } = useCart();
     const [isShaking, setIsShaking] = useState(false);
+    // const isMobile = window.innerWidth < 1024; // iPhone, iPad, máy bảng
+
+    // useEffect(() => {
+    //     // const isMobile = window.innerWidth < 1024;
+    // }, [isMobile])
 
     // Cập nhật user từ localStorage khi component mount
     useEffect(() => {
@@ -63,10 +68,10 @@ export default function MenuNav() {
         : baseMenu;
 
     return (
-        <nav className="sticky top-0 h-screen w-60 flex flex-col justify-between px-4 py-6 border-r border-gray-200 font-sans text-sm bg-white">
-            {/* Phần trên */}
-            <div className="flex flex-col gap-6">
-                <Link to='/' className="text-2xl font-semibold px-2 mb-6">Shopping</Link>
+        <nav className='lg:sticky lg:top-0 lg:h-screen lg:flex lg:flex-col lg:justify-between lg:px-4 lg:py-6 lg:w-60 lg:border-r lg:border-t-0  fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-100'>
+
+            <div className="flex gap-6 justify-around py-2 lg:flex-col lg:py-0">
+                <Link to='/' className="hidden lg:block text-2xl font-semibold px-2 my-2 mb-4">Shopping</Link>
                 {menu.map((item) => (
                     <Link
                         key={item.path}
@@ -78,24 +83,21 @@ export default function MenuNav() {
                     >
                         <div className='relative'>
                             {item.icon}
-                            {/* Nếu là Cart thì hiện badge */}
                             {item.label === 'Cart' && user && getTotalQuantity() >= 0 && (
                                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                                     {getTotalQuantity()}
                                 </span>
                             )}
                         </div>
-                        <span>{item.label}</span>
+                        <span className='hidden lg:block'>{item.label}</span>
                     </Link>
                 ))}
-            </div>
 
-            {/* Phần dưới cùng - Profile */}
-            <div>
                 <Link
                     to="/profile"
-                    className={`flex items-center gap-4 px-3 py-2 rounded-lg transition-colors duration-200
-                    ${currentPath === '/profile' ? 'bg-gray-100 text-black font-medium' : 'text-gray-700 hover:bg-gray-100'}`}
+                    className={`flex items-center gap-4 px-3 py-2 rounded-lg transition-colors duration-200 cursor-pointer
+                ${currentPath === '/profile' ? 'bg-gray-100 text-black font-medium' : 'text-gray-700 hover:bg-gray-100'}`
+                    }
                 >
                     {user?.image ? (
                         <img
@@ -106,7 +108,7 @@ export default function MenuNav() {
                     ) : (
                         <User size={24} />
                     )}
-                    <span>{user?.name || 'Profile'}</span>
+                    <span className='hidden lg:block'>{user?.name || 'Profile'}</span>
                 </Link>
             </div>
         </nav>
