@@ -6,9 +6,11 @@ import { useCart } from '../contexts/CartContext';
 export default function MenuNav() {
     const location = useLocation();
     const currentPath = location.pathname;
-    const { getTotalQuantity } = useCart();
     const [user, setUser] = useState<any>(null);
     const [isShaking, setIsShaking] = useState(false);
+    const { cart } = useCart();
+
+    const totalQuantity = cart?.totalQuantity ?? 0;
 
     useEffect(() => {
         const updateUser = () => {
@@ -29,12 +31,12 @@ export default function MenuNav() {
     }, []);
 
     useEffect(() => {
-        if (getTotalQuantity() > 0) {
+        if (totalQuantity > 0) {
             setIsShaking(true);
             const timer = setTimeout(() => setIsShaking(false), 500);
             return () => clearTimeout(timer);
         }
-    }, [getTotalQuantity]);
+    }, [totalQuantity]);
 
     const menu = [
         { label: 'Home', path: '/', icon: <HomeIcon size={24} /> },
@@ -78,9 +80,14 @@ ${item.label === 'Cart' && isShaking ? 'shake' : ''}
                     >
                         <div className="relative">
                             {item.icon}
-                            {item.label === 'Cart' && user && getTotalQuantity() >= 0 && (
+                            {/* {item.label === 'Cart' && user && getTotalQuantity() >= 0 && (
                                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                                     {getTotalQuantity()}
+                                </span>
+                            )} */}
+                            {item.label === 'Cart' && user && (totalQuantity ?? 0) >= 0 && (
+                                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                    {totalQuantity}
                                 </span>
                             )}
                         </div>

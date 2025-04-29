@@ -1,8 +1,6 @@
 import { Heart, ShoppingCart } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useCart } from '../contexts/CartContext';
-import axios from 'axios';
-import { API_URL } from '../../apis/api';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { message, Modal } from 'antd';
 
@@ -33,14 +31,15 @@ export default function ProductCard({
         },
       });
     } else {
+
+      console.log("add to cart", product);
+      addToCart(product);
+
       setIsShaking(true); // Bắt đầu rung
       message.success('Đã thêm sản phẩm vào giỏ hàng!')
       setTimeout(() => {
-        setIsShaking(false); // Dừng rung sau khi animation kết thúc
-        // handleAddToCart(); // Xử lý thêm vào giỏ hàng
+        setIsShaking(false);
       }, 500); // Thời gian rung (0.5s)
-      console.log("add to cart", product);
-      addToCart(product);
     }
   };
 

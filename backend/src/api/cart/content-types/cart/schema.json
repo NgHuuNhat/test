@@ -17,23 +17,17 @@
       "target": "plugin::users-permissions.user",
       "inversedBy": "cart"
     },
-    "productId": {
+    "cartItems": {
       "type": "relation",
       "relation": "manyToMany",
-      "target": "api::product.product",
-      "inversedBy": "carts"
+      "target": "api::cart-item.cart-item",
+      "mappedBy": "cartIds"
     },
-    "quantity_product": {
+    "totalQuantity": {
       "type": "integer"
     },
-    "total_price_product": {
+    "totalPrice": {
       "type": "decimal"
-    },
-    "total_price": {
-      "type": "decimal"
-    },
-    "total_quantity": {
-      "type": "integer"
     }
   }
 }

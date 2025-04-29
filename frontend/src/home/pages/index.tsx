@@ -17,6 +17,8 @@ export default function Home() {
   const [categories, setCategories] = useState<any[]>([]);
   const [isFocused, setIsFocused] = useState(false);
 
+  console.log("products", products)
+
   useEffect(() => {
     const fetchData = async () => {
       const [productRes, categoryRes] = await Promise.all([

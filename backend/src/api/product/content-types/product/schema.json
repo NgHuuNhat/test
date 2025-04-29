@@ -42,10 +42,10 @@
     "description": {
       "type": "string"
     },
-    "carts": {
+    "cartItemId": {
       "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::cart.cart",
+      "relation": "oneToOne",
+      "target": "api::cart-item.cart-item",
       "mappedBy": "productId"
     }
   }

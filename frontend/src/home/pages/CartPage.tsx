@@ -3,19 +3,23 @@ import { useCart } from "../contexts/CartContext";
 import { Button, message } from "antd";
 import { ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
+import { API_URL } from "../../apis/api";
 
 const CartPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { cartItems, increaseQuantity, decreaseQuantity, removeFromCart, getTotalQuantity, getTotalPrice, clearCart } = useCart();
   const [user, setUser] = useState<any>(null);
-  // const [loading, setLoading] = useState(true);
+  const { cart, deleteToCart, updateToCart } = useCart();
+
+  const totalQuantity = cart?.totalQuantity ?? 0;
+  const totalPrice = cart?.totalPrice ?? 0;
+
+  console.log("cart", cart)
+  const cartItems = cart?.cartItems
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user") || "null");
     setUser(storedUser);
-    // setLoading(false);
-
     const updateUser = () => {
       const updatedUser = JSON.parse(localStorage.getItem("user") || "null");
       setUser(updatedUser);
@@ -25,14 +29,6 @@ const CartPage = () => {
     return () => window.removeEventListener("userUpdated", updateUser);
   }, []);
 
-  // if (loading) {
-  //   return (
-  //     <div className="flex justify-center items-center h-[calc(100vh-64px)]">
-  //       <p className="text-lg text-gray-500">Đang tải thông tin người dùng...</p>
-  //     </div>
-  //   );
-  // }
-
   if (!user) {
     return (
       <div className="my-2 flex justify-center items-center h-[calc(100vh-64px)]">
@@ -41,21 +37,36 @@ const CartPage = () => {
     );
   }
 
-  const handlePayment = () => {
-    if (!user?.address || !user?.phone || !user?.email || !user?.name) {
-      message.error('Vui lòng nhập đầy đủ thông tin!');
-      return;
-    }
-
-    clearCart();
-    message.success('Thanh toán thành công!');
+  const handleRemoveProduct = (documentId: string) => {
+    console.log("xoa documentId", documentId)
+    deleteToCart(documentId);
   };
 
+  const handleQuantityChange = async (itemId: string, newQuantity: number) => {
+    console.log('itemId-newQuantity', itemId, newQuantity)
+    updateToCart(itemId, newQuantity)
+  };
+
+
+
+  // const handlePayment = () => {
+  //   if (!user?.address || !user?.phone || !user?.email || !user?.name) {
+  //     message.error('Vui lòng nhập đầy đủ thông tin!');
+  //     return;
+  //   }
+
+  //   clearCart();
+  //   message.success('Thanh toán thành công!');
+  // };
+
   const renderCartItems = () => {
-    return cartItems.map((item: any) => (
+    return cartItems?.map((item: any) => (
       <div key={item.documentId} className="flex hover:bg-gray-50 rounded-lg transition-all duration-200">
         <div className="flex items-center gap-6">
-          <img src={item.imageUrl} alt={item.name} className="w-24 h-24 md:w-36 md:h-36 object-cover rounded-full cursor-pointer" />
+          <img
+            // src="http://localhost:1337/uploads/3cb6a01a3d869126997a59aec3c7720e72b03f778da1ad633797e986f09cab9d_409e9fb1df.jpg"
+            src={`${API_URL}${item?.productId?.image?.[0]?.url}`}
+            alt={item.name} className="w-24 h-24 md:w-36 md:h-36 object-cover rounded-full cursor-pointer" />
         </div>
 
         <div className="ms-2 lg:ms-0 flex flex-1 md:flex-col justify-between md:flex-row items-center">
@@ -65,10 +76,19 @@ const CartPage = () => {
           </div>
 
           <div className="md:flex">
-            <Button type="text" size="small" onClick={() => decreaseQuantity(item.documentId)} className="hover:bg-gray-200 rounded-full">-</Button>
+            <Button type="text" size="small"
+              onClick={() => handleQuantityChange(item.documentId, item.quantity - 1)}
+              className="hover:bg-gray-200 rounded-full">-</Button>
+
             <span className="font-semibold mx-3">{item.quantity}</span>
-            <Button type="text" size="small" onClick={() => increaseQuantity(item.documentId)} className="hover:bg-gray-200 rounded-full">+</Button>
-            <Button type="text" size="small" onClick={() => removeFromCart(item.documentId)} className="hover:bg-gray-200 rounded-full">xóa</Button>
+
+            <Button type="text" size="small"
+              onClick={() => handleQuantityChange(item.documentId, item.quantity + 1)}
+              className="hover:bg-gray-200 rounded-full">+</Button>
+
+            <Button type="text" size="small"
+              onClick={() => handleRemoveProduct(item.documentId)}
+              className="hover:bg-gray-200 rounded-full">xóa</Button>
           </div>
         </div>
       </div>
@@ -82,12 +102,12 @@ const CartPage = () => {
         <div className="flex justify-center items-center mb-6">
           <div className="relative mx-4">
             <ShoppingCart size={24} />
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{getTotalQuantity()}</span>
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{totalQuantity}</span>
           </div>
           <h6 className="text-m py-2 font-semibold text-gray-800">{`Giỏ hàng của ${user?.name || 'bạn'}`}</h6>
         </div>
 
-        {cartItems.length === 0 ? (
+        {cartItems?.length === 0 ? (
           <div className="flex justify-center items-center h-full">
             <p className="text-sm text-gray-500">Giỏ hàng trống</p>
             <button onClick={() => navigate(`/?redirect=${location.pathname}`)} className="mx-2 text-sm text-blue-500 underline hover:text-blue-700 cursor-pointer">Mua hàng</button>
@@ -127,11 +147,11 @@ const CartPage = () => {
           {/* Cart Summary */}
           <div className="flex justify-between text-sm text-gray-500">
             <span className="font-bold">Số lượng:</span>
-            <span className="font-bold">{getTotalQuantity()}</span>
+            <span className="font-bold">{totalQuantity}</span>
           </div>
           <div className="flex justify-between text-sm text-gray-500">
             <span className="font-bold">Thành tiền:</span>
-            <span className="font-bold">${getTotalPrice().toLocaleString()}</span>
+            <span className="font-bold">${totalPrice}</span>
           </div>
 
           <span className="flex justify-center text-sm text-gray-500">
@@ -140,7 +160,9 @@ const CartPage = () => {
         </div>
 
         {/* Payment Button */}
-        <Button type="primary" size="large" className="mt-auto w-full bg-blue-500 text-white hover:bg-blue-600 transition-all duration-200" onClick={handlePayment}>
+        <Button type="primary" size="large" className="mt-auto w-full bg-blue-500 text-white hover:bg-blue-600 transition-all duration-200"
+        //  onClick={handlePayment}
+        >
           Thanh toán
         </Button>
       </div>
@@ -149,3 +171,90 @@ const CartPage = () => {
 };
 
 export default CartPage;
+
+
+
+
+
+// // import { useCart } from '@/contexts/CartContext';
+// import { InputNumber, Button } from 'antd';
+// import { useCart } from '../contexts/CartContext';
+// import { useEffect } from 'react';
+
+// const CartPage = () => {
+//   const { cart, deleteToCart, updateToCart } = useCart();
+
+//   // const handleQuantityChange = (productId: string, newQuantity: number) => {
+//   //   const updatedProducts = cart?.cartItems?.map((item: any) =>
+//   //     item.productId === productId ? { ...item, quantity: newQuantity } : item
+//   //   ) || [];
+
+//   //   updateCart(updatedProducts);
+//   // };
+
+//   const handleQuantityChange = async (itemId: string, newQuantity: number) => {
+//     console.log('itemId-newQuantity', itemId, newQuantity)
+//     updateToCart(itemId, newQuantity)
+//     // if (!cart || newQuantity < 1) return;
+
+//     // const item = cart.cartItems.find(i => i.documentId === itemId);
+//     // if (!item) return;
+
+//     // const totalPrice = item.price * newQuantity;
+
+//     // try {
+//     //   await api.put(`/api/cart-items/${itemId}`, {
+//     //     data: {
+//     //       quantity: newQuantity,
+//     //       totalPrice: totalPrice,
+//     //     }
+//     //   });
+
+//     //   await fetchCart(); // làm mới giỏ hàng
+//     // } catch (error) {
+//     //   console.error("Lỗi cập nhật số lượng:", error);
+//     // }
+//   };
+
+//   const handleRemoveProduct = (documentId: string) => {
+//     console.log("xoa documentId", documentId)
+//     deleteToCart(documentId);
+//     // const updatedProducts = cart?.cartItems?.filter(item => item.productId !== productId) || [];
+//     // updateCart(updatedProducts);
+//   };
+
+//   // if (!cart) return <div>Loading cart...</div>;
+
+//   console.log("cart", cart)
+
+//   return (
+//     <div>
+//       <h2>Giỏ hàng của bạn</h2>
+//       {cart?.cartItems?.map((item: any) => (
+//         <div key={item.documentId} className="flex items-center justify-between mb-4">
+//           <p>Product ID: {item.productId.documentId}</p>
+//           <p>Product Name: {item.name}</p>
+//           <p>Product Price: {item.price}</p>
+//           <p>Product Quantity: {item.quantity}</p>
+//           <p>Product TotalPrice: {item.totalPrice}</p>
+//           {/* <InputNumber
+//             min={1}
+//             value={item.quantity}
+//             onChange={(value) => handleQuantityChange(item.documentId, value || 1)}
+//           /> */}
+//           <div className="flex items-center gap-2">
+//             <button onClick={() => handleQuantityChange(item.documentId, item.quantity - 1)}>-</button>
+//             <span>{item.quantity}</span>
+//             <button onClick={() => handleQuantityChange(item.documentId, item.quantity + 1)}>+</button>
+//           </div>
+//           <Button danger onClick={() => handleRemoveProduct(item.documentId)}>
+//             Xóa
+//           </Button>
+//         </div>
+//       ))}
+//     </div>
+//   );
+// };
+
+// export default CartPage;
+
