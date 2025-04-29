@@ -3,6 +3,8 @@ import { Form, Input, Button, message, Card } from "antd";
 import { login } from "../apis/apiLogin";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getUserById } from "../apis/apiUser";
+import { useCart } from "../home/contexts/CartContext";
+import api from "../apis/api";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -12,6 +14,8 @@ const Login = () => {
   const searchParams = new URLSearchParams(location.search);
   const redirectPath = searchParams.get("redirect"); // lấy đường dẫn trước đó
   console.log("đường dẫn trước đó", redirectPath)
+
+  const { fetchCart } = useCart();
 
   // ❌ Nếu đã đăng nhập → redirect ra ngoài
   useEffect(() => {
@@ -43,6 +47,9 @@ const Login = () => {
       localStorage.setItem("token", jwt);
       localStorage.setItem("user", JSON.stringify(userLogin));
       form.resetFields();
+
+      //fetchcart
+      window.dispatchEvent(new Event("loginFetchCart"));
 
       // 🎯 Điều hướng theo phân quyền
       if (userLogin.role === "admin") {

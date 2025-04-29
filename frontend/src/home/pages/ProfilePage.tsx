@@ -5,6 +5,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { uploadImage } from '../../apis/apiUpload';
+import { useCart } from '../contexts/CartContext';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -19,6 +20,8 @@ export default function ProfilePage() {
 
   const searchParams = new URLSearchParams(location.search);
   const redirectPath = searchParams.get("redirect");
+
+  const { clearCart } = useCart();
 
   useEffect(() => {
     if (userStr) {
@@ -82,6 +85,7 @@ export default function ProfilePage() {
     localStorage.removeItem("user");
     window.dispatchEvent(new Event("userLogout"));
     message.success("Đăng xuất thành công!");
+    clearCart()
     navigate("/profile");
   };
 

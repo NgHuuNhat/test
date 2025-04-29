@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import api, { API_URL } from "../../apis/api";
+import api from "../../apis/api";
 
 interface CartItem {
     documentId: string;
@@ -23,25 +23,43 @@ interface CartContextType {
     updateToCart: (itemId: string, newQuantity: number) => void;
     fetchCart: () => void;
     deleteToCart: (documentId: any) => void;
+    clearCart: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
     const [cart, setCart] = useState<Cart | null>(null);
-    const user = JSON.parse(localStorage.getItem('user') as string)
-    const cartId = user?.cart?.documentId;
+    const [user, setUser] = useState<any>(JSON.parse(localStorage.getItem('user') as string));
 
     useEffect(() => {
-        fetchCart();
+        // Lắng nghe sự thay đổi của user trong localStorage và gọi fetchCart khi có sự thay đổi
+        const handleStorageChange = () => {
+            const newUser = JSON.parse(localStorage.getItem('user') as string);
+            setUser(newUser);
+        };
+
+        window.addEventListener("loginFetchCart", handleStorageChange);
+
+        // Xóa event listener khi component bị unmount
+        return () => {
+            window.removeEventListener("loginFetchCart", handleStorageChange);
+        };
     }, []);
 
+    useEffect(() => {
+        if (!user) {
+            setCart(null);  // Nếu không có user, giỏ hàng sẽ được làm trống
+        } else if (user?.cart?.documentId) {
+            fetchCart();  // Nếu có user và cartId, fetch giỏ hàng
+        }
+    }, [user]);  // Khi user thay đổi, fetch lại giỏ hàng
+
     const fetchCart = async () => {
+        const cartId = user?.cart?.documentId;
         if (!cartId) return;
         try {
             const res = await api.get(`/api/carts/${cartId}?populate[cartItems][populate][productId][populate]=image`);
-
-
             const rawCart = res.data.data;
             const totalQuantity = rawCart.cartItems?.reduce((total: number, item: CartItem) => total + item.quantity, 0) ?? 0;
             const totalPrice = rawCart.cartItems?.reduce((total: number, item: CartItem) => total + item.totalPrice, 0) ?? 0;
@@ -57,7 +75,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const addToCart = async (product: any) => {
-        if (!cartId) return;
+        if (!user?.cart?.documentId) return;
 
         const cartItems = cart?.cartItems || [];
         const findCartItems = cartItems?.find((p: any) => p?.productId?.documentId === product?.documentId);
@@ -65,11 +83,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         const totalPrice = product.price * quantity;
 
         try {
-            // Nếu sản phẩm chưa có trong giỏ hàng, thêm mới sản phẩm vào giỏ
             if (!findCartItems) {
                 await api.post(`/api/cart-items`, {
                     data: {
-                        cartIds: cartId,
+                        cartIds: user.cart.documentId,
                         productId: product.documentId,
                         name: product.name,
                         price: product.price,
@@ -78,7 +95,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                     }
                 });
             } else {
-                // Nếu sản phẩm đã có, cập nhật quantity và totalPrice
                 await api.put(`/api/cart-items/${findCartItems.documentId}`, {
                     data: {
                         quantity: quantity,
@@ -86,22 +102,21 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                     }
                 });
             }
-            await fetchCart(); // Cập nhật lại giỏ hàng sau khi thêm
+            await fetchCart();
         } catch (err) {
             console.error('Add to cart failed', err);
         }
     };
 
-
     const deleteToCart = async (documentId: any) => {
         try {
-            await api.delete(`/api/cart-items/${documentId}`)
+            await api.delete(`/api/cart-items/${documentId}`);
             console.log("Xóa sản phẩm thành công");
             await fetchCart();
         } catch (error) {
             console.error('Delete to cart failed', error);
         }
-    }
+    };
 
     const updateToCart = async (itemId: string, newQuantity: number) => {
         if (!cart || newQuantity < 1) return;
@@ -115,66 +130,23 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                     totalPrice: totalPrice,
                 }
             });
-            await fetchCart(); // làm mới giỏ hàng
+            await fetchCart();
         } catch (error) {
             console.error("Lỗi cập nhật số lượng:", error);
         }
     };
 
-
-
-
-
-    // const increaseQuantity = (productId: any) => {
-    //     setCartItems(prevItems =>
-    //         prevItems.map(item =>
-    //             item.documentId === productId
-    //                 ? { ...item, quantity: item.quantity + 1 }
-    //                 : item
-    //         )
-    //     );
-    // };
-
-    // const decreaseQuantity = (productId: any) => {
-    //     setCartItems(prevItems =>
-    //         prevItems.map(item =>
-    //             item.documentId === productId
-    //                 ? { ...item, quantity: item.quantity > 1 ? item.quantity - 1 : 1 }
-    //                 : item
-    //         )
-    //     );
-    // };
-
-    // const removeFromCart = (id: string) => {
-    //     setCartItems((prev) => prev.filter((i) => i.documentId !== id));
-    // };
-
-    // const getTotalQuantity = () =>
-    //     cartItems.reduce((total, item) => total + item.quantity, 0);
-
-    // const getTotalPrice = () =>
-    //     cartItems.reduce((total, item) => total + item.quantity * item.price, 0);
-
-    // const clearCart = () => setCartItems([]);
+    const clearCart = () => setCart(null);
 
     return (
-        <CartContext.Provider
-            value={{
-                // cartItems,
-                // addToCart,
-                // removeFromCart,
-                // increaseQuantity,
-                // decreaseQuantity,
-                // getTotalQuantity,
-                // getTotalPrice,
-                // clearCart,
-                cart,
-                addToCart,
-                updateToCart,
-                fetchCart,
-                deleteToCart
-            }}
-        >
+        <CartContext.Provider value={{
+            cart,
+            addToCart,
+            updateToCart,
+            fetchCart,
+            deleteToCart,
+            clearCart
+        }}>
             {children}
         </CartContext.Provider>
     );
