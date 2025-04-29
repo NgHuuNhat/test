@@ -9,7 +9,7 @@ const CartPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState<any>(null);
-  const { cart, deleteToCart, updateToCart } = useCart();
+  const { cart, deleteToCart, updateToCart, fetchCart } = useCart();
 
   const totalQuantity = cart?.totalQuantity ?? 0;
   const totalPrice = cart?.totalPrice ?? 0;
@@ -24,6 +24,10 @@ const CartPage = () => {
       const updatedUser = JSON.parse(localStorage.getItem("user") || "null");
       setUser(updatedUser);
     };
+
+    if (user) {
+      fetchCart();
+    }
 
     window.addEventListener("userUpdated", updateUser);
     return () => window.removeEventListener("userUpdated", updateUser);
