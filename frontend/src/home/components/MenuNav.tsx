@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { HomeIcon, Search, Heart, ShoppingCart, User, Shield } from 'lucide-react';
+import { HomeIcon, Search, Heart, ShoppingCart, User, Shield, CreditCard } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 
 export default function MenuNav() {
@@ -43,6 +43,7 @@ export default function MenuNav() {
         { label: 'Search', path: '/search', icon: <Search size={24} /> },
         { label: 'Wishlist', path: '/wishlist', icon: <Heart size={24} /> },
         { label: 'Cart', path: '/cart', icon: <ShoppingCart size={24} /> },
+        // { label: 'Payment', path: '/payment', icon: <CreditCard size={24} /> },
         ...(user?.role === 'admin'
             ? [{ label: 'Dashboard', path: '/admin', icon: <Shield size={24} /> }]
             : []),

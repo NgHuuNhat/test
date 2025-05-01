@@ -15,6 +15,7 @@ import HomeLayout from './home/components/HomeLayout';
 import WishlistPage from './home/pages/WishlistPage';
 import SearchPage from './home/pages/SearchPage';
 import { CartProvider } from './home/contexts/CartContext';
+import PaymentPage from './home/pages/PaymentPage';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
             <Route path="wishlist" element={<WishlistPage />} />
             <Route path="cart" element={<CartPage />} />
             <Route path="profile" element={<ProfilePage />} />
+            <Route path="payment" element={<PaymentPage />} />
           </Route>
 
           {/* Route cho trang quản trị */}

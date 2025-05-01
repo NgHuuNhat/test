@@ -57,15 +57,21 @@ const CartPage = () => {
 
 
 
-  // const handlePayment = () => {
-  //   if (!user?.address || !user?.phone || !user?.email || !user?.name) {
-  //     message.error('Vui lòng nhập đầy đủ thông tin!');
-  //     return;
-  //   }
-
-  //   clearCart();
-  //   message.success('Thanh toán thành công!');
-  // };
+  const handlePayment = (totalQuantity: any, totalPrice: any) => {
+    if (!user?.address || !user?.phone || !user?.email || !user?.name) {
+      message.error('Vui lòng nhập đầy đủ thông tin!');
+      return;
+    } else {
+      console.log("totalQuantity-totalPrice", totalQuantity, totalPrice)
+      navigate(`/payment?redirect=${location.pathname}`, {
+        state: {
+          totalQuantity,
+          totalPrice,
+          redirect: location.pathname,
+        },
+      })
+    }
+  };
 
   const renderCartItems = () => {
     return cartItems?.map((item: any) => (
@@ -135,6 +141,12 @@ const CartPage = () => {
           {/* User Info */}
           {[
             { label: "Mã giỏ hàng", value: user?.cart?.id || 'Chưa có giỏ hàng' },
+            // {
+            //   label: "Mã giỏ hàng",
+            //   value: user?.cart
+            //     ? `${user.cart.id} | ${user.cart.documentId}`
+            //     : 'Chưa có giỏ hàng'
+            // },
             { label: "Tên giỏ hàng", value: `Giỏ hàng của ${user?.name || 'bạn'}` },
             { label: "Mã khách hàng", value: user?.id },
             { label: "Tên khách hàng", value: user?.name || 'trống' },
@@ -168,11 +180,15 @@ const CartPage = () => {
         </div>
 
         {/* Payment Button */}
-        <Button type="primary" size="large" className="mt-auto w-full bg-blue-500 text-white hover:bg-blue-600 transition-all duration-200"
-        //  onClick={handlePayment}
+        <Button
+          type="primary"
+          size="large"
+          className="mt-auto w-full bg-blue-500 text-white hover:bg-blue-600 transition-all duration-200"
+          onClick={() => handlePayment(totalQuantity, totalPrice)} // <-- sửa ở đây
         >
           Thanh toán
         </Button>
+
       </div>
     </div>
   );
