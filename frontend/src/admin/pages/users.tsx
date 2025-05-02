@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 export default function Users() {
   const { data: categoryData } = useQuery("categories", getCategories);
   const { data: roleData } = useQuery("roles", getRoles);
+  const [onEditing, setOnEditing] = useState<any>(false);
 
   const columns = [
     { title: "ID", dataIndex: "id" },
@@ -46,21 +47,27 @@ export default function Users() {
 
   const formFields = (form: any, fileList: any, setFileList: any, categories: any[] = [], roles: any[] = []) => (
     <>
-      <Form.Item name="phone" label="Phone" rules={[{ required: true }]}>
+      
+      <Form.Item name="username" label="Username" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
-      <Form.Item name="username" label="Username" rules={[{ required: true }]}>
+      <Form.Item name="password" label="Mật khẩu"
+      //  rules={[{ required: true }]}
+      rules={[{ required: !onEditing, message: 'Vui lòng nhập mật khẩu' }]}
+       >
+        <Input />
+      </Form.Item>
+
+      <Form.Item name="email" label="Email" rules={[{ required: true }]}>
+        <Input />
+      </Form.Item>
+      <Form.Item name="phone" label="Phone" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
       <Form.Item name="name" label="Name">
         <Input />
       </Form.Item>
-      <Form.Item name="email" label="Email" rules={[{ required: true }]}>
-        <Input />
-      </Form.Item>
-      <Form.Item name="password" label="Mật khẩu">
-        <Input />
-      </Form.Item>
+      
       <Form.Item label="Hình ảnh">
         <Upload
           listType="picture"
@@ -84,6 +91,12 @@ export default function Users() {
     </>
   );
 
+  const handleEditingChange = (data: boolean) => {
+    console.log("data",data)
+    setOnEditing(data)
+  };
+  
+
   return (
     <DataTable
       title="Quản lý tài khoản"
@@ -97,6 +110,7 @@ export default function Users() {
       categories={categoryData?.data}
       roles={roleData?.data}
       apiUrl={API_URL}
+      onEditingChange={handleEditingChange}
     />
   );
 }

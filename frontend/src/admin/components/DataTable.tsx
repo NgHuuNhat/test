@@ -14,6 +14,7 @@ interface Props {
   categories?: any[];
   roles?: any[];
   apiUrl?: string;
+  onEditingChange?: (onEditing: any) => void; 
 }
 
 const DataTable = ({
@@ -28,6 +29,7 @@ const DataTable = ({
   categories = [],
   roles = [],
   apiUrl = "",
+  onEditingChange,
 }: Props) => {
   const [form] = Form.useForm();
   const [data, setData] = useState<any[]>([]);
@@ -39,6 +41,16 @@ const DataTable = ({
   const [search, setSearch] = useState("");
   const [allData, setAllData] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [onEditing, setOnEditing] = useState<any>(false);
+
+  useEffect(() => {
+    if (modalOpen == false) {
+      setOnEditing(false);
+    }
+  }, [modalOpen]);
+
+  console.log(onEditing)
+  onEditingChange?.(onEditing) 
 
   useEffect(() => {
     if (!search) {
@@ -201,6 +213,7 @@ const DataTable = ({
                         url: record.imageUrl,
                       }] : []);
                       setModalOpen(true);
+                      setOnEditing(true);
                     }}
                     className="bg-yellow-500 text-white"
                   >

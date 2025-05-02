@@ -10,7 +10,7 @@ export default function ProductCard({
   product: any;
 }) {
 
-  const { addToCart } = useCart();
+  const { addToCart,clearCart } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState<any>();
@@ -23,11 +23,17 @@ export default function ProductCard({
   }, []); // Chạy 1 lần khi component mount
 
   const handleAddToCart = async () => {
-    if (!user) {
+    if (!user || !user?.cart) {
       Modal.confirm({
-        title: "Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!",
+        title: "Vui lòng đăng nhập tài khoản user để thêm sản phẩm vào giỏ hàng!",
         onOk: async () => {
-          navigate(`/login?redirect=${location.pathname}`);
+          // navigate(`/login?redirect=${location.pathname}`);
+              // localStorage.removeItem("token");
+              // localStorage.removeItem("user");
+              // window.dispatchEvent(new Event("userLogout"));
+              // message.success("Đăng xuất thành công!");
+              // clearCart()
+              // navigate(`/login?redirect=${location.pathname}`);
         },
       });
     } else {
