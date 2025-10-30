@@ -22,6 +22,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.55.0",
+    "react-lazy-load-image-component": "^1.6.3",
     "react-query": "^3.39.3",
     "react-router-dom": "^7.5.1",
     "react-scripts": "^5.0.1",
@@ -58,6 +59,7 @@
     "@types/lodash.debounce": "^4.0.9",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.1",
+    "@types/react-lazy-load-image-component": "^1.6.4",
     "@types/react-router-dom": "^5.3.3",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.3"

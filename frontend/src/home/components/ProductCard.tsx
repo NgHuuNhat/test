@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { message, Modal } from 'antd';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 export default function ProductCard({
   product,
@@ -60,12 +61,31 @@ export default function ProductCard({
 
   return (
     <div className="w-full aspect-square relative overflow-hidden group">
+      {/* <img
+        src={product.lowQualityImage || '/placeholder.jpg'} // ảnh mờ nhẹ
+        alt={product.name}
+        className="absolute inset-0 w-full h-full object-cover blur-md scale-110"
+      /> */}
       <img
         src={product.image}
         alt={product.name}
+        loading="lazy"
+        // effect="blur"
+        // placeholderSrc={product.thumbnail || '/placeholder.jpg'}
+
         onClick={handleViewDetail}
         className="w-full h-full object-cover cursor-pointer transition-transform duration-300 group-hover:scale-105"
       />
+      {/* <LazyLoadImage
+        src={product.image}
+        alt={product.name}
+        // loading="lazy"
+        // effect="blur"
+        placeholderSrc={product.thumbnail || '/placeholder.jpg'}
+
+        onClick={handleViewDetail}
+        className="w-full h-full object-cover cursor-pointer transition-transform duration-300 group-hover:scale-105"
+      /> */}
 
       <div className='absolute top-0 right-0 text-white text-sm flex justify-between items-center'>
         <button onClick={handleAddToWish} className="p-4 text-white/100 rounded-full hover:text-white/50 cursor-pointer transition-transform hover:scale-105">
@@ -78,7 +98,7 @@ export default function ProductCard({
           <span className="font-semibold text-l">{product.name}</span>
           <span className="font-semibold text-l">${product.price}</span>
         </div>
-        
+
         <button onClick={handleAddToCart}
           className={`mx-auto mb-1 w-full max-w-[40%] flex justify-center items-center bg-white/10 py-2 rounded-full text-white transition-transform duration-200 hover:scale-105 hover:text-white/50 cursor-pointer ${isShaking ? 'shake' : ''}`}
         >
