@@ -17,18 +17,27 @@ export default function Home() {
   const [categories, setCategories] = useState<any[]>([]);
   const [isFocused, setIsFocused] = useState(false);
 
-  console.log("products", products)
+  // console.log("products", products)
 
   useEffect(() => {
     const fetchData = async () => {
-      const [productRes, categoryRes] = await Promise.all([
-        getProducts({}),
-        getCategories()
-      ]);
+      try {
+        // const [productRes, categoryRes] = await Promise.all([
+        //   getProducts({}),
+        //   getCategories()
+        // ]);
 
-      const productList = productRes.data || [];
-      setProducts(productList);
-      setCategories(categoryRes);
+        // const productList = productRes.data || [];
+        // setProducts(productList);
+        // setCategories(categoryRes);
+        const index = await getProducts()
+        console.log("index", index)
+        setProducts(index);
+      } catch (error) {
+        console.error("Lỗi không xác định:", error);
+        setProducts([]);
+        setCategories([]);
+      }
     };
 
     fetchData();
@@ -107,7 +116,7 @@ export default function Home() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[2px]">
         {filteredProducts.map((product: any) => (
           <ProductCard
-            key={product.documentId}
+            key={product.id}
             product={product}
           />
         ))}

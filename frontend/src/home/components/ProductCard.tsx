@@ -10,13 +10,14 @@ export default function ProductCard({
   product: any;
 }) {
 
-  const { addToCart,clearCart } = useCart();
+  const { addToCart, clearCart } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState<any>();
   const [isShaking, setIsShaking] = useState(false);
 
   useEffect(() => {
+    console.log('productCart', product)
     // Lấy thông tin user từ localStorage khi lần đầu render
     const storedUser = JSON.parse(localStorage.getItem("user") || "null");
     setUser(storedUser);
@@ -28,12 +29,12 @@ export default function ProductCard({
         title: "Vui lòng đăng nhập tài khoản user để thêm sản phẩm vào giỏ hàng!",
         onOk: async () => {
           // navigate(`/login?redirect=${location.pathname}`);
-              // localStorage.removeItem("token");
-              // localStorage.removeItem("user");
-              // window.dispatchEvent(new Event("userLogout"));
-              // message.success("Đăng xuất thành công!");
-              // clearCart()
-              // navigate(`/login?redirect=${location.pathname}`);
+          // localStorage.removeItem("token");
+          // localStorage.removeItem("user");
+          // window.dispatchEvent(new Event("userLogout"));
+          // message.success("Đăng xuất thành công!");
+          // clearCart()
+          // navigate(`/login?redirect=${location.pathname}`);
         },
       });
     } else {
@@ -60,7 +61,7 @@ export default function ProductCard({
   return (
     <div className="w-full aspect-square relative overflow-hidden group">
       <img
-        src={product.imageUrl}
+        src={product.image}
         alt={product.name}
         onClick={handleViewDetail}
         className="w-full h-full object-cover cursor-pointer transition-transform duration-300 group-hover:scale-105"
@@ -75,13 +76,14 @@ export default function ProductCard({
       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent text-white text-sm items-center">
         <div className="w-full flex justify-between items-center pb-4 px-4">
           <span className="font-semibold text-l">{product.name}</span>
-          <button onClick={handleAddToCart}
-            className={`w-full max-w-[40%] flex justify-center items-center bg-white/10 py-2 rounded-full text-white transition-transform duration-200 hover:scale-105 hover:text-white/50 cursor-pointer ${isShaking ? 'shake' : ''}`}
-          >
-            <ShoppingCart className='w-full' size={26} />
-          </button>
           <span className="font-semibold text-l">${product.price}</span>
         </div>
+        
+        <button onClick={handleAddToCart}
+          className={`mx-auto mb-1 w-full max-w-[40%] flex justify-center items-center bg-white/10 py-2 rounded-full text-white transition-transform duration-200 hover:scale-105 hover:text-white/50 cursor-pointer ${isShaking ? 'shake' : ''}`}
+        >
+          <ShoppingCart className='w-full' size={26} />
+        </button>
 
       </div>
     </div>
