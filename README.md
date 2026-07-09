@@ -36,5 +36,5 @@
 ```
 
 # Sau đó
-console.log(data);
-reset();
+- console.log(data);
+- reset();
